@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Télécharger Tyti - Votre Assistant Budgétaire</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(180deg, #0d2015 0%, #050706 100%);
+            --card-bg: #181e1b;
+            --accent-tyti: #22c55e;
+            --text-color: #ffffff;
+            --text-secondary: #8e9a94;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .download-container {
+            max-width: 450px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 32px;
+            padding: 40px 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .app-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 22px;
+            border: 3px solid var(--accent-tyti);
+            margin-bottom: 20px;
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .app-version {
+            display: inline-block;
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--accent-tyti);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .app-description {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        /* Le gros bouton de téléchargement personnalisé */
+        .btn-download {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            background: #ffffff;
+            color: #000000;
+            text-decoration: none;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            transition: transform 0.1s, opacity 0.2s;
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-download:active {
+            transform: scale(0.98);
+            opacity: 0.95;
+        }
+
+        .btn-download svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+        }
+
+        .info-installation {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .info-installation h3 {
+            font-size: 13px;
+            color: var(--accent-tyti);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-installation p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 24px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="download-container">
+        <img class="app-icon" src="r.png" alt="Tyti Logo">
+
+        <h1 class="app-title">Tyti</h1>
+        <div class="app-version">Version 1.0.0 (Android)</div>
+
+        <p class="app-description">
+            Gérez votre budget quotidien, fixez vos objectifs financiers et suivez l'évolution de vos avoirs en temps réel, de manière sécurisée et 100% gratuite.
+        </p>
+
+        <a href="https://github.com/exauce560/Tyti/raw/main/Tyti.apk" class="btn-download">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Télécharger l'application (.APK)
+        </a>
+
+        <div class="info-installation">
+            <h3>💡 Comment installer ?</h3>
+            <p>Si Android bloque l'installation, allez dans les <strong>Paramètres</strong> de votre téléphone > <strong>Sécurité</strong> > et autorisez l'installation d'applications provenant de <strong>Sources inconnues</strong>.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        Application sécurisée par chiffrement local • Tyti 2026
+    </div>
+
+</body>
+</html>
