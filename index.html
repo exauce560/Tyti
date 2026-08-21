@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToutGo - Télécharger & Installer</title>
+    <title>Tyti - Télécharger & Installer</title>
     <style>
         :root {
             --bg-color: #0a1f14;
             --card-bg: #112a1c;
-            --primary: #1db954;
+            --primary: #ffffff;
             --text: #ffffff;
             --text-secondary: #8da096;
             --border: rgba(255, 255, 255, 0.1);
@@ -32,10 +32,40 @@
             padding: 20px;
         }
 
+        /* Écran de vérification au chargement */
+        #auth-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top: 4px solid #1db954;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .container {
             max-width: 800px;
             width: 100%;
             text-align: center;
+            display: none; /* Caché par défaut en attendant la vérification */
         }
 
         /* Logo & En-tête */
@@ -93,6 +123,15 @@
         .card-icon {
             font-size: 40px;
             margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon svg {
+            width: 42px;
+            height: 42px;
+            fill: #ffffff;
         }
 
         .card-title {
@@ -120,13 +159,14 @@
             padding: 14px;
             border-radius: 10px;
             border: none;
-            background: var(--primary);
-            color: #000;
+            background: #ffffff;
+            color: #000000;
             font-weight: 700;
             font-size: 15px;
             text-decoration: none;
             cursor: pointer;
             transition: transform 0.2s, opacity 0.2s;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
         }
 
         .btn:active {
@@ -136,13 +176,18 @@
 </head>
 <body>
 
-    <div class="container">
+    <!-- Écran de chargement transparent le temps d'évaluer la session -->
+    <div id="auth-loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container" id="mainContainer">
         <!-- Section Logo ToutGo -->
         <div class="logo-container">
-            <img src="apple-touch-icon.png" alt="Logo ToutGo" onerror="this.src='https://via.placeholder.com/100/1db954/ffffff?text=ToutGo'">
+            <img src="apple-touch-icon.png" alt="Logo Tyti" onerror="this.src='https://via.placeholder.com/100/1db954/ffffff?text=ToutGo'">
         </div>
 
-        <h1 class="app-title">ToutGo</h1>
+        <h1 class="app-title">Tyti</h1>
         <p class="app-description">
             Bienvenue sur Tyti. Choisissez votre plateforme ci-dessous pour télécharger l'application ou l'installer sur votre écran d'accueil.
         </p>
@@ -167,7 +212,11 @@
             <!-- Case Droite : iPhone / iOS (PWA) -->
             <div class="card">
                 <div>
-                    <div class="card-icon">🍎</div>
+                    <div class="card-icon">
+                        <svg viewBox="0 0 170 170" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.34.13-9.14-1.9-14.4-6.08-3.38-2.73-7.27-7.39-11.67-13.98-6.19-9.15-11.1-19.26-14.73-30.34-3.63-11.08-5.45-21.73-5.45-31.97 0-14.03 3.52-25.86 10.56-35.49 7.04-9.63 16.03-14.54 26.97-14.74 4.57 0 9.8 1.15 15.69 3.45 5.88 2.3 9.94 3.45 12.18 3.45 1.79 0 6.01-1.22 12.66-3.66 6.65-2.44 11.89-3.56 15.72-3.35 11.95.53 21.61 5.25 28.98 14.16-10.63 6.42-15.82 15.39-15.58 26.92.24 9.07 3.72 16.63 10.44 22.68 6.72 6.05 14.79 9.53 24.21 10.44-2.3 6.86-5.18 13.68-8.63 20.46zM119.22 31.84c0-7.38 2.65-14.42 7.95-21.13 5.3-6.71 12.03-10.71 20.19-12 0.22 1.44.33 2.65.33 3.63 0 7.23-2.72 14.31-8.16 21.24-5.44 6.93-12.24 10.97-20.4 12.12-.11-.98-.17-2.26-.17-3.86z"/>
+                        </svg>
+                    </div>
                     <h2 class="card-title">Version iPhone (iOS)</h2>
                     <ul class="card-instructions">
                         <li>Ouvrez ce lien dans le navigateur <b>Safari</b>.</li>
@@ -181,5 +230,39 @@
         </div>
     </div>
 
+    <!-- SCRIPT DE VÉRIFICATION DU STATUT DE CONNEXION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+            authDomain: "tyti-deaee.firebaseapp.com",
+            projectId: "tyti-deaee",
+            storageBucket: "tyti-deaee.firebasestorage.app",
+            messagingSenderId: "668655272910",
+            appId: "1:668655272910:web:296794f893e36784d2619f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const loader = document.getElementById('auth-loader');
+        const container = document.getElementById('mainContainer');
+
+        // Vérification prioritaire via LocalStorage (très rapide)
+        const activeUid = localStorage.getItem('tyti_active_uid');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user || activeUid) {
+                // Si connecté ➔ redirection directe vers la page PWA / App
+                window.location.replace("first-iOS.html");
+            } else {
+                // Si pas connecté ➔ masque le chargement et affiche la page d'accueil/installation
+                loader.style.display = 'none';
+                container.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
