@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Vos Comptes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #ffffff;
+            color: #0c1a12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .account-card {
+            background: #f1f3f4;
+            width: 100%;
+            max-width: 360px;
+            border: 2px solid #ffcc00;
+            border-radius: 24px;
+            padding: 30px 20px 24px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #ff6600;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .user-header-email {
+            font-size: 13px;
+            color: #5a6e63;
+            font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .avatar-container {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffcc00, #ff6600);
+            color: #ffffff;
+            font-size: 36px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px auto;
+            border: 3px solid #1e73be;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-greeting {
+            font-size: 24px;
+            color: #0c1a12;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .btn-manage {
+            background: #1e73be;
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+            margin-bottom: 32px;
+            border: none;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 12px rgba(30, 115, 190, 0.15);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: left;
+        }
+
+        /* Liste des comptes */
+        .accounts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: #ffffff;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            overflow: hidden;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: none;
+            background: #ffffff;
+            width: 100%;
+            cursor: pointer;
+            gap: 14px;
+            transition: background 0.2s;
+        }
+
+        /* Compte actuellement actif */
+        .option-item.active-account {
+            background: #e8f0fe;
+        }
+
+        .option-item:active {
+            background: #e8eaed;
+        }
+
+        /* Actions du bas */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: #ffffff;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            overflow: hidden;
+            border-top: 2px solid #f1f3f4;
+        }
+
+        .mini-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ff6600;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .mini-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .icon-action {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e73be;
+        }
+
+        .option-details {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .option-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0c1a12;
+        }
+
+        .option-sub {
+            font-size: 12px;
+            color: #5a6e63;
+            margin-top: 2px;
+        }
+
+        .badge-active {
+            font-size: 11px;
+            background: #1e73be;
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="account-card">
+        <button type="button" class="close-btn" id="btnClose">✕</button>
+
+        <div class="user-header-email" id="headerEmail">Chargement...</div>
+
+        <div class="avatar-container" id="userAvatar">-</div>
+
+        <div class="user-greeting" id="userGreeting">Bonjour</div>
+
+        <a href="confidential.html" class="btn-manage" id="btnManageLink">Gérer le compte</a>
+
+        <div class="options-container">
+            <div class="accounts-list" id="accountsListContainer"></div>
+
+            <div class="action-buttons">
+                <button type="button" class="option-item" id="btnAddAccount">
+                    <div class="icon-action">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </div>
+                    <div class="option-details">
+                        <span class="option-title" style="color: #1e73be;">Ajouter un autre compte</span>
+                    </div>
+                </button>
+
+                <button type="button" class="option-item" id="btnSignOutAll">
+                    <div class="icon-action" style="color: #ff6600;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </div>
+                    <div class="option-details">
+                        <span class="option-title" style="color: #ff6600;">Quitter toutes les sessions</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+        authDomain: "tyti-deaee.firebaseapp.com",
+        projectId: "tyti-deaee",
+        storageBucket: "tyti-deaee.firebasestorage.app",
+        messagingSenderId: "668655272910",
+        appId: "1:668655272910:web:296794f893e36784d2619f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let savedAccounts = JSON.parse(localStorage.getItem('tyti_accounts') || '[]');
+    let activeUid = localStorage.getItem('tyti_active_uid');
+    let enCoursDAjout = localStorage.getItem('tyti_ajout_en_cours') === 'true';
+
+    function renderAccountsList() {
+        const container = document.getElementById('accountsListContainer');
+        container.innerHTML = '';
+
+        savedAccounts.forEach(acc => {
+            const isActive = acc.uid === activeUid;
+            const item = document.createElement('div');
+            item.className = `option-item ${isActive ? 'active-account' : ''}`;
+
+            const initial = acc.name ? acc.name.charAt(0).toUpperCase() : 'U';
+            const avatarContent = acc.avatar ? `<img src="${acc.avatar}" alt="Avatar">` : initial;
+
+            item.innerHTML = `
+                <div class="mini-avatar">${avatarContent}</div>
+                <div class="option-details">
+                    <span class="option-title">${acc.name || 'Utilisateur'}</span>
+                    <span class="option-sub">${acc.email}</span>
+                </div>
+                ${isActive ? '<span class="badge-active">Actif</span>' : ''}
+            `;
+
+            item.addEventListener('click', () => {
+                if (!isActive) {
+                    switchAccount(acc.uid);
+                }
+            });
+
+            container.appendChild(item);
+        });
+    }
+
+    function switchAccount(uid) {
+        const targetAccount = savedAccounts.find(acc => acc.uid === uid);
+        if (targetAccount) {
+            localStorage.setItem('tyti_active_uid', targetAccount.uid);
+            localStorage.setItem('user_prenom', targetAccount.name);
+            localStorage.setItem('user_avatar', targetAccount.avatar || '');
+            window.location.reload();
+        }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        // --- LOGIQUE MULTI-COMPTE RÉPARÉE ---
+        // Si on vient de soumettre un nouveau formulaire de connexion (ajout en cours)
+        // on ACCEPTE le nouvel utilisateur Firebase de manière prioritaire !
+        if (user && enCoursDAjout) {
+            activeUid = user.uid;
+            localStorage.setItem('tyti_active_uid', activeUid);
+            localStorage.removeItem('tyti_ajout_en_cours'); // Réinitialise l'état
+            enCoursDAjout = false;
+        }
+        // Sinon, si on est en navigation classique et qu'on a forcé une bascule locale :
+        else if (user && activeUid && user.uid !== activeUid) {
+            user = null; // Utilise le cache local simulé
+        }
+
+        if (user) {
+            let displayName = user.displayName || "Utilisateur";
+            let photoURL = user.photoURL || null;
+
+            try {
+                const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                if (userDocSnap.exists()) {
+                    const userData = userDocSnap.data();
+                    if (userData.name) displayName = userData.name;
+                    if (userData.avatar) photoURL = userData.avatar;
+                }
+            } catch (error) {
+                console.error("Erreur Firestore :", error);
+            }
+
+            activeUid = user.uid;
+            localStorage.setItem('tyti_active_uid', activeUid);
+
+            const existingAccIndex = savedAccounts.findIndex(acc => acc.uid === user.uid);
+            const accountData = { uid: user.uid, email: user.email, name: displayName, avatar: photoURL };
+
+            if (existingAccIndex > -1) {
+                savedAccounts[existingAccIndex] = accountData;
+            } else {
+                savedAccounts.push(accountData);
+            }
+            localStorage.setItem('tyti_accounts', JSON.stringify(savedAccounts));
+
+            // Interface
+            document.getElementById('headerEmail').textContent = user.email;
+            document.getElementById('userGreeting').textContent = displayName;
+            document.getElementById('btnManageLink').textContent = `Gérer le compte ${displayName}`;
+            localStorage.setItem('user_prenom', displayName);
+
+            const userAvatarDiv = document.getElementById('userAvatar');
+            if (photoURL) {
+                userAvatarDiv.innerHTML = `<img src="${photoURL}" alt="Avatar">`;
+                localStorage.setItem('user_avatar', photoURL);
+            } else {
+                userAvatarDiv.textContent = displayName.charAt(0).toUpperCase();
+                localStorage.removeItem('user_avatar');
+            }
+
+            renderAccountsList();
+        } else {
+            if (activeUid && savedAccounts.length > 0) {
+                renderAccountsList();
+                const activeData = savedAccounts.find(acc => acc.uid === activeUid);
+                if (activeData) {
+                    document.getElementById('headerEmail').textContent = activeData.email;
+                    document.getElementById('userGreeting').textContent = activeData.name;
+                    document.getElementById('btnManageLink').textContent = `Gérer le compte ${activeData.name}`;
+                    localStorage.setItem('user_prenom', activeData.name);
+
+                    const userAvatarDiv = document.getElementById('userAvatar');
+                    if (activeData.avatar) {
+                        userAvatarDiv.innerHTML = `<img src="${activeData.avatar}" alt="Avatar">`;
+                        localStorage.setItem('user_avatar', activeData.avatar);
+                    } else {
+                        userAvatarDiv.textContent = activeData.name.charAt(0).toUpperCase();
+                        localStorage.removeItem('user_avatar');
+                    }
+                }
+            } else {
+                window.location.href = "index.html";
+            }
+        }
+    });
+
+    document.getElementById('btnClose').addEventListener('click', () => {
+        window.location.href = "accueil.html";
+    });
+
+    // ACTION : AJOUTER UN COMPTE
+    document.getElementById('btnAddAccount').addEventListener('click', async () => {
+        // Balise cruciale : indique à l'app d'accepter la prochaine session Firebase entrante
+        localStorage.setItem('tyti_ajout_en_cours', 'true');
+        localStorage.setItem('tyti_connecte', 'false');
+
+        await signOut(auth);
+        window.location.href = "index.html";
+    });
+
+    // ACTION : TOUT QUITTER
+    document.getElementById('btnSignOutAll').addEventListener('click', async () => {
+        await signOut(auth);
+        localStorage.clear();
+        window.location.href = "index.html";
+    });
+</script>
+</body>
+</html>

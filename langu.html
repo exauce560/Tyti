@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Choisir la langue</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --accent-green: #00ff66; /* Vert premium électrique */
+            --gray-text: #94a3b8;
+            --gray-border: #1e293b;
+            --radius-main: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .phone-container {
+            width: 100%;
+            height: 100vh;
+            padding: 30px 24px 40px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* En-tête (Espacement conservé pour le design global) */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 20px;
+        }
+
+        /* Conteneur principal basé sur ton croquis */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            text-align: center;
+        }
+
+        /* Logo / Titre Tyti en haut du croquis */
+        .app-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #ffffff;
+        }
+
+        /* "Bienvenue sur Tyti" juste en dessous */
+        .welcome-text {
+            font-size: 16px;
+            color: var(--gray-text);
+            margin-top: -30px; /* Rapproche le sous-titre du logo */
+            font-weight: 500;
+        }
+
+        /* Le sélecteur de Langue au milieu du croquis */
+        .lang-selector-container {
+            width: 100%;
+            max-width: 300px;
+            position: relative;
+        }
+
+        .lang-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 16px 20px;
+            background: radial-gradient(circle, #0f172a 0%, #020617 100%);
+            border: 1.5px solid var(--gray-border);
+            border-radius: var(--radius-main);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-trigger-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* Petite icône globe 🌐 dessinée sur ton croquis */
+        .globe-icon {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            color: var(--gray-text);
+        }
+
+        /* Petite flèche descendante à droite */
+        .arrow-icon {
+            transition: transform 0.3s ease;
+        }
+
+        /* Menu déroulant caché par défaut */
+        .lang-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: var(--radius-main);
+            overflow: hidden;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .lang-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-trigger.open .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .lang-option:hover {
+            background-color: #1e293b;
+        }
+
+        .lang-option.selected {
+            color: var(--accent-green);
+        }
+
+        /* Bouton de validation en bas à droite */
+        .bottom-action-container {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+        }
+
+        .btn-submit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            height: 46px;
+            background-color: #0f172a;
+            color: #475569;
+            border: 1px solid #1e293b;
+            border-radius: 23px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: not-allowed;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Allumé en vert quand une langue est validée */
+        .btn-submit.active {
+            background-color: var(--accent-green);
+            color: #000000;
+            border-color: var(--accent-green);
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 255, 102, 0.25);
+        }
+
+        .btn-submit.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 255, 102, 0.4);
+        }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <div class="header-nav"></div>
+
+        <div class="main-content">
+            <h1 class="app-title">Tyti</h1>
+            <p class="welcome-text" id="txtWelcome">Bienvenue sur Tyti</p>
+
+            <div class="lang-selector-container">
+                <div class="lang-trigger" id="langTrigger">
+                    <div class="lang-trigger-left">
+                        <span class="globe-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        </span>
+                        <span id="currentLangLabel">Langue</span>
+                    </div>
+                    <span class="arrow-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </span>
+                </div>
+
+                <div class="lang-dropdown" id="langDropdown">
+                    <div class="lang-option" data-lang="fr">
+                        <span>Français</span>
+                        <span>🇫🇷</span>
+                    </div>
+                    <div class="lang-option" data-lang="en">
+                        <span>English</span>
+                        <span>🇺🇸</span>
+                    </div>
+                    <div class="lang-option" data-lang="ja">
+                        <span>日本語</span>
+                        <span>🇯🇵</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-action-container">
+            <button class="btn-submit" id="submitBtn" disabled>
+                <span id="txtBtn">Continuer</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const langTrigger = document.getElementById('langTrigger');
+        const langDropdown = document.getElementById('langDropdown');
+        const currentLangLabel = document.getElementById('currentLangLabel');
+        const submitBtn = document.getElementById('submitBtn');
+        const langOptions = document.querySelectorAll('.lang-option');
+
+        let selectedLang = null;
+
+        // Ouvrir/Fermer le menu de sélection
+        langTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langTrigger.classList.toggle('open');
+            langDropdown.classList.toggle('open');
+        });
+
+        // Gestion du choix de la langue dans le menu déroulant
+        langOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                langOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+
+                selectedLang = option.getAttribute('data-lang');
+
+                // Met à jour l'affichage de la boîte
+                currentLangLabel.textContent = option.firstElementChild.textContent;
+
+                // Ferme le menu déroulant
+                langTrigger.classList.remove('open');
+                langDropdown.classList.remove('open');
+
+                // Active le bouton Continuer en bas à droite
+                submitBtn.removeAttribute('disabled');
+                submitBtn.classList.add('active');
+
+                // Traduit dynamiquement la page d'accueil pour le rendu pro
+                applyInstantTranslation(selectedLang);
+            });
+        });
+
+        // Fermer le menu si on clique n'importe où ailleurs sur l'écran
+        document.addEventListener('click', () => {
+            langTrigger.classList.remove('open');
+            langDropdown.classList.remove('open');
+        });
+
+        // Petite fonction de traduction instantanée via le fichier lang.json
+        function applyInstantTranslation(lang) {
+            fetch('lang.json')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('txtBtn').textContent = data[lang].btn_continue;
+                    document.getElementById('txtWelcome').textContent = lang === 'en' ? "Welcome to Tyti" : "Bienvenue sur Tyti";
+                })
+                .catch(err => console.error(err));
+        }
+
+        // Action lors du clic sur le bouton "Continuer"
+        submitBtn.addEventListener('click', () => {
+            if (!submitBtn.classList.contains('active') || !selectedLang) return;
+
+            // On mémorise la langue choisie localement
+            localStorage.setItem('tyti_lang', selectedLang);
+
+            // Redirection vers l'ancien index renommé welcome.html
+            window.location.href = "welc.html";
+        });
+    </script>
+</body>
+</html>

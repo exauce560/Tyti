@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Paramètres</title>
+    <style>
+        /* ==================== THEME SOMBRE (PAR DÉFAUT) ==================== */
+        :root, body.dark {
+            --bg-gradient: linear-gradient(180deg, #0a1f14 0%, #040806 100%);
+            --primary-tyti: #1db954;
+            --text-color: #ffffff;
+            --text-secondary: #8da096;
+            --input-bg: #1c2620;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --danger-color: #ff4a4a;
+            --nav-bg: #060a07;
+        }
+
+        /* ==================== THEME CLAIR (HARMONISÉ AVEC DOLLAR.HTML) ==================== */
+        body.light {
+            --bg-gradient: linear-gradient(135deg, #f4fcf6 0%, #edf2f0 100%);
+            --primary-tyti: #1aa34a;
+            --text-color: #121c16;
+            --text-secondary: #5a6e63;
+            --input-bg: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --danger-color: #d93838;
+            --nav-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-color);
+            padding: 16px 16px 100px 16px;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* En-tête Profil Style WhatsApp (Sans grand cadre) */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 4px 24px 4px;
+            text-decoration: none;
+            color: inherit;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+
+        .profile-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar-container {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: var(--input-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-container span {
+            font-size: 24px;
+            color: var(--primary-tyti);
+            font-weight: bold;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .profile-name {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .profile-action-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Lignes de Paramètres épurées (Style WhatsApp, sans boîte) */
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 4px;
+            text-decoration: none;
+            color: inherit;
+            font-size: 16px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .arrow-right {
+            font-size: 16px;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 26px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #2c3a32; transition: .3s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--primary-tyti); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Select Field Langue minimaliste */
+        .select-field {
+            padding: 6px 12px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-weight: 600;
+            outline: none;
+            font-size: 13px;
+        }
+
+        /* Bouton Déconnexion */
+        .btn-danger {
+            width: 100%;
+            padding: 16px;
+            background: none;
+            color: var(--danger-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 32px;
+        }
+
+        /* Navigation basse */
+        .nav-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0; height: 72px;
+            background: var(--nav-bg); display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid var(--border-color); z-index: 100;
+            transition: background 0.3s ease;
+        }
+        .nav-item {
+            text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600;
+            display: flex; flex-direction: column; align-items: center; gap: 4px; width: 33.33%;
+        }
+        .nav-item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-item.active { color: var(--primary-tyti); }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+    <script>
+        /* CHARGEMENT DIRECT DU THÈME SANS FLASH BLANC */
+        (function() {
+            const savedTheme = localStorage.getItem('tyti_theme') || 'dark';
+            document.documentElement.classList.add(savedTheme);
+            window.addEventListener('DOMContentLoaded', () => {
+                document.body.classList.add(savedTheme);
+            });
+        })();
+    </script>
+</head>
+<body>
+
+    <a href="Modifier.html" class="profile-section">
+        <div class="profile-left">
+            <div class="avatar-container" id="userAvatar">
+                <span>U</span>
+            </div>
+            <div class="profile-details">
+                <span class="profile-name" id="lblNomAffiche">...</span>
+                <span class="profile-action-text" id="lblActionModifier">Modifier ></span>
+            </div>
+        </div>
+        <div class="arrow-right">❯</div>
+    </a>
+
+    <div class="settings-container">
+
+        <div class="menu-item">
+            <span id="lblLangSelect">Langue</span>
+            <select id="selectLangue" class="select-field">
+                <option value="fr">Français (FR)</option>
+                <option value="en">English (EN)</option>
+                <option value="ja">日本語 (JA)</option>
+            </select>
+        </div>
+
+        <div class="menu-item">
+            <span id="lblThemeToggle">Mode Clair</span>
+            <label class="switch">
+                <input type="checkbox" id="switchTheme">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="menu-item">
+            <span id="lblNotifToggle">Notification</span>
+            <label class="switch">
+                <input type="checkbox" id="switchNotif">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <a href="confidential.html" class="menu-item">
+            <span id="lblConfidentialite">Confidentialité</span>
+            <div class="arrow-right">❯</div>
+        </a>
+
+        <a href="reglage.html" class="menu-item">
+            <span id="lblReglage">Réglage</span>
+            <div class="arrow-right">❯</div>
+        </a>
+
+        <a href="sauvegarde.html" class="menu-item">
+            <span id="lblSauvegarde">Sauvegarde</span>
+            <div class="arrow-right">❯</div>
+        </a>
+    </div>
+
+    <button class="btn-danger" id="btnDeconnexion">Se déconnecter</button>
+
+    <div class="nav-bar">
+        <a href="accueil.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-svg lucide lucide-house-plus-icon lucide-house-plus">
+                <path d="M12.35 21H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 .71-1.53l7-6a2 2 0 0 1 2.58 0l7 6A2 2 0 0 1 21 10v2.35"/>
+                <path d="M14.8 12.4A1 1 0 0 0 14 12h-4a1 1 0 0 0-1 1v8"/>
+                <path d="M15 18h6"/>
+                <path d="M18 15v6"/>
+            </svg>
+            <span id="navHome">Accueil</span>
+        </a>
+        <a href="dollar.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-blue);"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            <span id="navDollar">Streak</span>
+        </a>
+        <a href="parametre.html" class="nav-item active">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="navMe">Moi</span>
+        </a>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { initializeFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+        authDomain: "tyti-deaee.firebaseapp.com",
+        projectId: "tyti-deaee",
+        storageBucket: "tyti-deaee.firebasestorage.app",
+        messagingSenderId: "668655272910",
+        appId: "1:668655272910:web:296794f893e36784d2619f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = initializeFirestore(app, {});
+
+    const dict = {
+        fr: {
+            modify: "Modifier >", lang: "Langue", notif: "Notification", theme: "Mode Clair",
+            conf: "Confidentialité", reg: "Réglage", save: "Sauvegarde",
+            logout: "Se déconnecter", home: "Accueil", streak: "streak", me: "Moi"
+        },
+        en: {
+            modify: "Edit >", lang: "Language", notif: "Notification", theme: "Light Mode",
+            conf: "Privacy", reg: "Settings", save: "Backup",
+            logout: "Logout", home: "Home", streak: "Streak", me: "Me"
+        },
+        ja: {
+            modify: "編集 >", lang: "言語", notif: "通知設定", theme: "ライトモード",
+            conf: "プライバシー", reg: "各種設定", save: "データ保存",
+            logout: "ログアウト", home: "ホーム", streak: "ストリーク", me: "マイページ"
+        }
+    };
+
+    const selectLangue = document.getElementById('selectLangue');
+    const switchNotif = document.getElementById('switchNotif');
+    const switchTheme = document.getElementById('switchTheme');
+    const lblNomAffiche = document.getElementById('lblNomAffiche');
+    const userAvatar = document.getElementById('userAvatar');
+    let currentUser = null;
+
+    function appliquerLangueUI(lang) {
+        const ui = dict[lang] || dict.fr;
+        document.getElementById('lblActionModifier').innerText = ui.modify;
+        document.getElementById('lblLangSelect').innerText = ui.lang;
+        document.getElementById('lblThemeToggle').innerText = ui.theme;
+        document.getElementById('lblNotifToggle').innerText = ui.notif;
+        document.getElementById('lblConfidentialite').innerText = ui.conf;
+        document.getElementById('lblReglage').innerText = ui.reg;
+        document.getElementById('lblSauvegarde').innerText = ui.save;
+        document.getElementById('btnDeconnexion').innerText = ui.logout;
+        document.getElementById('navHome').innerText = ui.home;
+        document.getElementById('navDollar').innerText = ui.streak;
+        document.getElementById('navMe').innerText = ui.me;
+    }
+
+    const savedLang = localStorage.getItem('tyti_lang') || 'fr';
+    selectLangue.value = savedLang;
+    appliquerLangueUI(savedLang);
+
+    // --- OPTIMISATION HORS-LIGNE ---
+    const cachePrenom = localStorage.getItem('user_prenom') || localStorage.getItem('user_nom');
+    if (cachePrenom) lblNomAffiche.textContent = cachePrenom;
+
+    const cacheAvatar = localStorage.getItem('user_avatar');
+    if (cacheAvatar) {
+        userAvatar.innerHTML = `<img src="${cacheAvatar}" alt="Avatar">`;
+    } else if (cachePrenom) {
+        userAvatar.innerHTML = `<span>${cachePrenom.charAt(0).toUpperCase()}</span>`;
+    }
+
+    let activeUid = localStorage.getItem('tyti_active_uid');
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user && activeUid && user.uid !== activeUid) {
+            user = null;
+        }
+
+        if (user) {
+            currentUser = user;
+            activeUid = user.uid;
+            localStorage.setItem('tyti_active_uid', activeUid);
+            await chargerParametresProfil();
+        } else {
+            if (activeUid) {
+                currentUser = { uid: activeUid };
+                await chargerParametresProfil();
+            } else {
+                window.location.href = "index.html";
+            }
+        }
+    });
+
+    async function chargerParametresProfil() {
+        try {
+            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+
+                const prenomAffichage = data.name || data.nom || "Utilisateur";
+                lblNomAffiche.textContent = prenomAffichage;
+                localStorage.setItem('user_prenom', prenomAffichage);
+
+                if (data.tyti_lang && data.tyti_lang !== savedLang) {
+                    selectLangue.value = data.tyti_lang;
+                    localStorage.setItem('tyti_lang', data.tyti_lang);
+                    appliquerLangueUI(data.tyti_lang);
+                }
+
+                if (data.avatar || data.photoURL) {
+                    const avatarUrl = data.avatar || data.photoURL;
+                    userAvatar.innerHTML = `<img src="${avatarUrl}" alt="Avatar">`;
+                    localStorage.setItem('user_avatar', avatarUrl);
+                } else {
+                    userAvatar.innerHTML = `<span>${prenomAffichage.charAt(0).toUpperCase()}</span>`;
+                    localStorage.removeItem('user_avatar');
+                }
+            }
+        } catch (e) {
+            console.log("Mode hors-ligne actif, utilisation des données du LocalStorage");
+        }
+    }
+
+    selectLangue.addEventListener('change', async function() {
+        const chosenLang = this.value;
+        localStorage.setItem('tyti_lang', chosenLang);
+        appliquerLangueUI(chosenLang);
+
+        if (currentUser) {
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), { tyti_lang: chosenLang });
+            } catch (e) { console.error("Échec de synchronisation cloud de la langue."); }
+        }
+    });
+
+    /* GESTION DU TOGGLE DE THEME INTERACTIF */
+    function initThemeSwitch() {
+        const currentTheme = localStorage.getItem('tyti_theme') || 'dark';
+        if (currentTheme === 'light') {
+            switchTheme.checked = true;
+            document.body.className = 'light';
+        } else {
+            switchTheme.checked = false;
+            document.body.className = 'dark';
+        }
+    }
+    initThemeSwitch();
+
+    switchTheme.addEventListener('change', function() {
+        if (this.checked) {
+            localStorage.setItem('tyti_theme', 'light');
+            document.body.className = 'light';
+        } else {
+            localStorage.setItem('tyti_theme', 'dark');
+            document.body.className = 'dark';
+        }
+    });
+
+    // ==========================================
+    // --- GESTION DES NOTIFICATIONS PWA & CAPACITOR ---
+    // ==========================================
+
+    function programmerRappelA18hPWA() {
+        const maintenant = new Date();
+        let cible = new Date();
+        cible.setHours(18, 0, 0, 0);
+
+        if (maintenant >= cible) {
+            cible.setDate(cible.getDate() + 1);
+        }
+
+        const delai = cible.getTime() - maintenant.getTime();
+
+        setTimeout(() => {
+            if (localStorage.getItem("notif_rappel_active") === "true") {
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification("Tyti", {
+                        body: "Si vous n'avez pas encore confirmé, on vous attend !",
+                        icon: "apple-touch-icon.png"
+                    });
+                }
+                programmerRappelA18hPWA(); // Reprogramme pour le lendemain
+            }
+        }, delai);
+    }
+
+    async function reprogrammerRappelCapacitor() {
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+            await window.Capacitor.Plugins.LocalNotifications.cancel({ notifications: [{ id: 1800 }] });
+
+            await window.Capacitor.Plugins.LocalNotifications.schedule({
+                notifications: [{
+                    title: "Tyti",
+                    body: "Si vous n'avez pas encore confirmé, on vous attend !",
+                    id: 1800,
+                    schedule: {
+                        on: { hour: 18, minute: 0 },
+                        repeats: true
+                    },
+                    iconColor: '#1db954'
+                }]
+            });
+        }
+    }
+
+    switchNotif.addEventListener('change', async function() {
+        const isActive = this.checked;
+
+        if (isActive) {
+            // 1. Détection Si Environnement Native (Capacitor)
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+                try {
+                    const status = await window.Capacitor.Plugins.LocalNotifications.requestPermissions();
+                    if (status.display === 'granted') {
+                        localStorage.setItem("notif_rappel_active", "true");
+
+                        // Notification immédiate
+                        await window.Capacitor.Plugins.LocalNotifications.schedule({
+                            notifications: [{
+                                title: "Tyti",
+                                body: "Merci d'avoir activé les notifications !",
+                                id: 1
+                            }]
+                        });
+
+                        reprogrammerRappelCapacitor();
+                    } else {
+                        this.checked = false;
+                        localStorage.setItem("notif_rappel_active", "false");
+                    }
+                } catch (err) {
+                    console.warn("Erreur Notification Capacitor:", err);
+                }
+            }
+            // 2. Détection Si Environnement Web PWA (iOS / Android Safari / Chrome)
+            else if ('Notification' in window) {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    localStorage.setItem("notif_rappel_active", "true");
+
+                    // Notification immédiate de confirmation avec Icône et Nom
+                    new Notification("Tyti", {
+                        body: "Merci d'avoir activé les notifications !",
+                        icon: "apple-touch-icon.png"
+                    });
+
+                    programmerRappelA18hPWA();
+                } else {
+                    this.checked = false;
+                    localStorage.setItem("notif_rappel_active", "false");
+                    alert("Les notifications ont été refusées. Tu peux les réactiver dans les réglages Safari de ton iPhone.");
+                }
+            } else {
+                alert("Les notifications Web ne sont pas supportées sur ce navigateur. Pense à ajouter l'application sur l'écran d'accueil.");
+                this.checked = false;
+                localStorage.setItem("notif_rappel_active", "false");
+            }
+        } else {
+            // Si désactivé par l'utilisateur
+            localStorage.setItem("notif_rappel_active", "false");
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+                await window.Capacitor.Plugins.LocalNotifications.cancel({ notifications: [{ id: 1800 }] });
+            }
+        }
+    });
+
+    // Restaurer l'état au chargement de la page
+    if (localStorage.getItem("notif_rappel_active") === "true") {
+        switchNotif.checked = true;
+        programmerRappelA18hPWA();
+    }
+
+    document.getElementById('btnDeconnexion').addEventListener('click', async () => {
+        await signOut(auth);
+        localStorage.clear();
+        window.location.href = "index.html";
+    });
+</script>
+</body>
+</html>

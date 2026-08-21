@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Sauvegarde</title>
+    <style>
+        /* ==================== THEMES HARMONISÉS ==================== */
+        :root, body.dark {
+            --bg-gradient: linear-gradient(180deg, #0a1f14 0%, #040806 100%);
+            --primary-tyti: #1db954;
+            --text-color: #ffffff;
+            --text-secondary: #8da096;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --progress-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light {
+            --bg-gradient: linear-gradient(135deg, #f4fcf6 0%, #edf2f0 100%);
+            --primary-tyti: #1aa34a;
+            --text-color: #121c16;
+            --text-secondary: #5a6e63;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --progress-bg: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-color);
+            padding: 16px 20px 100px 20px;
+            min-height: 100vh;
+        }
+
+        /* Flèche retour */
+        .back-arrow {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 22px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        /* Conteneur principal calqué sur ton croquis */
+        .backup-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        /* Le petit rectangle de date de ton croquis */
+        .date-box {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        /* Ta description du milieu */
+        .backup-description {
+            font-size: 15px;
+            color: var(--text-color);
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        /* Bloc d'informations sur le compte et paramètres */
+        .account-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .account-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .account-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .account-value {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Zone de progression de la barre */
+        .progress-container {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .progress-container.show {
+            display: flex;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: var(--progress-bg);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary-tyti);
+            border-radius: 10px;
+            transition: width 0.2s ease;
+        }
+
+        .progress-status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Le bouton Sauvegarder - Style WhatsApp : aligné à gauche et compact */
+        .btn-backup {
+            align-self: flex-start; /* Aligne à gauche */
+            padding: 10px 24px;    /* Plus petit et compact */
+            background: var(--primary-tyti);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;   /* Bords bien arrondis comme WhatsApp */
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.15);
+            margin-top: 10px;
+        }
+
+        .btn-backup:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Ligne de taille tout en bas */
+        .size-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: -5px;
+        }
+
+        .size-label {
+            color: var(--text-color);
+        }
+
+        .size-value {
+            color: var(--text-secondary);
+        }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+    <script>
+        /* APPLICATION DU THÈME SANS FLASH BLANC */
+        (function() {
+            const savedTheme = localStorage.getItem('tyti_theme') || 'dark';
+            document.documentElement.classList.add(savedTheme);
+            window.addEventListener('DOMContentLoaded', () => {
+                document.body.classList.add(savedTheme);
+            });
+        })();
+    </script>
+</head>
+<body>
+
+    <a href="parametre.html" class="back-arrow">❮</a>
+
+    <div class="backup-container">
+
+        <h1 class="section-title" id="lblDernierSauvegarde">Dernière sauvegarde</h1>
+
+        <p class="backup-description" id="lblDescText">
+            Sauvegardez vos discussions et vos médias dans l'espace de stockage en ligne. Vous pourrez les restaurer sur un nouveau téléphone après y avoir téléchargé Tyti.
+        </p>
+
+        <div class="size-box">
+            <span class="size-label" id="lblTaille">Taille :</span>
+            <span class="size-value" id="valSize">0 Mo</span>
+        </div>
+
+        <div class="date-box" id="valLastBackup">Calcul...</div>
+
+        <button class="btn-backup" id="btnStartBackup">Sauvegarder</button>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+            <div class="progress-status">
+                <span id="progressPercent">0%</span>
+                <span id="progressBytes">Envoi vers le cloud...</span>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin-top: 10px;">
+
+        <div class="account-box">
+            <div class="account-item">
+                <span class="account-label" id="lblCompteGoogle">Compte Tyti</span>
+                <span class="account-value" id="valUserEmail">Chargement...</span>
+            </div>
+            <div class="account-item">
+                <span class="account-label" id="lblFrequence">Fréquence</span>
+                <span class="account-value" id="valFrequence">Toutes les semaines</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+            authDomain: "tyti-deaee.firebaseapp.com",
+            projectId: "tyti-deaee",
+            storageBucket: "tyti-deaee.firebasestorage.app",
+            messagingSenderId: "668655272910",
+            appId: "1:668655272910:web:296794f893e36784d2619f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
+
+        // Dictionnaire corrigé spécifique à la page de Sauvegarde
+        const dict = {
+            fr: {
+                title: "Dernière sauvegarde",
+                desc: "Sauvegardez vos discussions et vos médias dans l'espace de stockage en ligne. Vous pourrez les restaurer sur un nouveau téléphone après y avoir téléchargé Tyti.",
+                size: "Taille :",
+                btn: "Sauvegarder",
+                account: "Compte Tyti",
+                freq: "Fréquence",
+                freqVal: "Toutes les semaines",
+                sending: "Envoi vers le cloud...",
+                success: "Sauvegarde terminée !",
+                offlineErr: "⚠️ Impossible de sauvegarder hors-ligne.",
+                never: "Jamais"
+            },
+            en: {
+                title: "Last Backup",
+                desc: "Back up your messages and media to online storage. You can restore them on a new phone after downloading Tyti.",
+                size: "Size:",
+                btn: "Back Up",
+                account: "Tyti Account",
+                freq: "Frequency",
+                freqVal: "Weekly",
+                sending: "Uploading to cloud...",
+                success: "Backup completed!",
+                offlineErr: "⚠️ Cannot backup while offline.",
+                never: "Never"
+            },
+            ja: {
+                title: "最終バックアップ",
+                desc: "メッセージとメディアをオンラインストレージにバックアップします。Tytiをダウンロードした後、新しいスマートフォンで復元できます。",
+                size: "サイズ :",
+                btn: "バックアップ",
+                account: "Tyti アカウント",
+                freq: "頻度",
+                freqVal: "毎週",
+                sending: "クラウドにアップロード中...",
+                success: "バックアップが完了しました！",
+                offlineErr: "⚠️ オフライン中はバックアップできません。",
+                never: "なし"
+            }
+        };
+
+        const lang = localStorage.getItem('tyti_lang') || 'fr';
+        const ui = dict[lang] || dict.fr;
+
+        function applyTranslations() {
+            document.getElementById('lblDernierSauvegarde').innerText = ui.title;
+            document.getElementById('lblDescText').innerText = ui.desc;
+            document.getElementById('lblTaille').innerText = ui.size;
+            document.getElementById('btnStartBackup').innerText = ui.btn;
+            document.getElementById('lblCompteGoogle').innerText = ui.account;
+            document.getElementById('lblFrequence').innerText = ui.freq;
+            document.getElementById('valFrequence').innerText = ui.freqVal;
+        }
+        applyTranslations();
+
+        let currentUser = null;
+        const valUserEmail = document.getElementById('valUserEmail');
+        const valLastBackup = document.getElementById('valLastBackup');
+        const valSize = document.getElementById('valSize');
+        const btnStartBackup = document.getElementById('btnStartBackup');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const progressBytes = document.getElementById('progressBytes');
+
+        // --- INTERCEPTION DU COMPTE ACTIF (MULTI-COMPTE) ---
+        let activeUid = localStorage.getItem('tyti_active_uid');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user && activeUid && user.uid !== activeUid) {
+                user = null;
+            }
+
+            if (user) {
+                currentUser = user;
+                activeUid = user.uid;
+                localStorage.setItem('tyti_active_uid', activeUid);
+                valUserEmail.textContent = user.email || "Utilisateur Tyti";
+                await loadBackupInfo();
+            } else {
+                if (activeUid) {
+                    currentUser = { uid: activeUid };
+                    valUserEmail.textContent = "...";
+                    await loadBackupInfo();
+                } else {
+                    window.location.replace("index.html");
+                }
+            }
+        });
+
+        async function loadBackupInfo() {
+            try {
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.email) valUserEmail.textContent = data.email;
+
+                    // Récupération de la dernière date de sauvegarde
+                    if (data.lastBackupAt) {
+                        const date = new Date(data.lastBackupAt);
+                        valLastBackup.textContent = date.toLocaleDateString(lang, { day: 'numeric', month: 'short', year: 'numeric' });
+                    } else {
+                        valLastBackup.textContent = ui.never;
+                    }
+
+                    // Estimation fictive ou réelle de la taille des données
+                    if (data.backupSize) {
+                        valSize.textContent = data.backupSize;
+                    } else {
+                        valSize.textContent = "1.2 Mo";
+                    }
+                }
+            } catch (err) {
+                console.error("Erreur de chargement des infos de sauvegarde", err);
+                valLastBackup.textContent = ui.never;
+            }
+        }
+
+        // --- SIMULATION ANIMÉE DE CRÉATION ET D'ENVOI DE SAUVEGARDE CLOUD ---
+        btnStartBackup.addEventListener('click', async () => {
+            if (!currentUser) return;
+
+            if (!navigator.onLine) {
+                alert(ui.offlineErr);
+                return;
+            }
+
+            btnStartBackup.disabled = true;
+            progressContainer.classList.add('show');
+            progressBarFill.style.width = "0%";
+            progressPercent.textContent = "0%";
+            progressBytes.textContent = ui.sending;
+
+            let percentage = 0;
+            const interval = setInterval(async () => {
+                percentage += Math.floor(Math.random() * 15) + 5;
+                if (percentage > 100) percentage = 100;
+
+                progressBarFill.style.width = `${percentage}%`;
+                progressPercent.textContent = `${percentage}%`;
+
+                if (percentage === 100) {
+                    clearInterval(interval);
+
+                    const nowIso = new Date().toISOString();
+                    try {
+                        // Enregistrement de l'état de sauvegarde sur l'UID actif
+                        await updateDoc(doc(db, "users", currentUser.uid), {
+                            lastBackupAt: nowIso,
+                            backupSize: "1.5 Mo"
+                        });
+
+                        progressBytes.textContent = ui.success;
+                        const date = new Date(nowIso);
+                        valLastBackup.textContent = date.toLocaleDateString(lang, { day: 'numeric', month: 'short', year: 'numeric' });
+                        valSize.textContent = "1.5 Mo";
+
+                        setTimeout(() => {
+                            progressContainer.classList.remove('show');
+                            btnStartBackup.disabled = false;
+                        }, 2000);
+
+                    } catch (e) {
+                        console.error(e);
+                        progressBytes.textContent = "Error";
+                        btnStartBackup.disabled = false;
+                    }
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>

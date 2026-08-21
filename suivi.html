@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Suivi Élite Pro</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #05140b 0%, #020504 100%);
+            --glow-green: #1db954;
+            --glow-green-alpha: rgba(29, 185, 84, 0.15);
+            --card-bg: rgba(20, 30, 24, 0.6);
+            --card-border: rgba(255, 255, 255, 0.04);
+            --text-main: #ffffff;
+            --text-muted: #8da096;
+            --accent-gold: #ffd233;
+            /* TON BLEU ÉCLATANT AJOUTÉ ICI */
+            --blue-default: #2563eb;
+            --blue-glow: rgba(37, 99, 235, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            padding: 24px 16px 100px 16px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: var(--glow-green);
+            opacity: 0.12;
+            filter: blur(120px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Barre supérieure de sélection de devise */
+        .currency-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            padding: 10px 16px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+        }
+
+        .currency-bar span {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .currency-selector {
+            background: #090e0b;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* En-tête de page */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform-origin: 50% 50%;
+        }
+
+        .avatar-frame {
+            width: 104px;
+            height: 104px;
+            border-radius: 50%;
+            background: #19221c;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar-frame:active {
+            transform: scale(0.95);
+        }
+
+        .avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-frame span {
+            font-size: 42px;
+            font-weight: bold;
+            color: var(--glow-green);
+            text-shadow: 0 0 10px var(--glow-green-alpha);
+        }
+
+        .level-tag {
+            position: absolute;
+            bottom: 4px;
+            background: linear-gradient(90deg, #1db954, #127535);
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+            letter-spacing: 0.5px;
+            z-index: 3;
+            text-transform: uppercase;
+        }
+
+        .profile-header h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-header p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Cartes d'affichage (Glassmorphism) */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Section Statistiques avancées */
+        .advanced-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .stat-box .num {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stat-box .lbl {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .consistency-bar-wrapper {
+            background: rgba(255,255,255,0.05);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .consistency-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff4a4a, #1db954);
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+
+        .analysis-text {
+            font-size: 13px;
+            margin-top: 10px;
+            line-height: 1.4;
+            color: #d1ded6;
+        }
+
+        /* Mini Graphique d'activité hebdomadaire */
+        .activity-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 60px;
+            margin-top: 10px;
+            padding: 0 4px;
+        }
+
+        .chart-bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 10%;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            height: 10px;
+            transition: height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .chart-bar.active {
+            background: linear-gradient(180deg, #1db954 0%, #0d5225 100%);
+            box-shadow: 0 2px 8px var(--glow-green-alpha);
+        }
+
+        /* CASSER LE VERT : Le jour "Aujourd'hui" ou sélectionné passe en bleu électrique */
+        .chart-bar.current-day {
+            background: linear-gradient(180deg, var(--blue-default) 0%, #1e3a8a 100%) !important;
+            box-shadow: 0 2px 10px var(--blue-glow) !important;
+        }
+
+        .chart-day {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Section Objectifs de niveau */
+        .target-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        .target-box .target-counter {
+            font-weight: 700;
+            color: var(--glow-green);
+        }
+
+        /* Grille des Badges de Succès */
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            text-align: center;
+        }
+
+        .badge-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.2;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .badge-item.unlocked {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+
+        .badge-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1c2620 0%, #0d120f 100%);
+            border: 1px solid rgba(29, 185, 84, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .badge-item.unlocked .badge-icon {
+            border-color: var(--glow-green);
+            box-shadow: 0 0 12px var(--glow-green-alpha);
+        }
+
+        .badge-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* CASSER LE VERT : Bouton d'action de partage transformé en Bleu Éclatant pour plus d'impact */
+        .btn-share {
+            width: 100%;
+            padding: 15px;
+            background: var(--blue-default);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px var(--blue-glow);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-share:active {
+            background: #1d4ed8;
+            transform: scale(0.98);
+        }
+
+        body.light-mode {
+            --bg-gradient: linear-gradient(135deg, #f4f7f5 0%, #e8ebe9 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(0, 0, 0, 0.05);
+            --text-main: #0c1a12;
+            --text-muted: #5a6e63;
+            --panel-bg: rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode::before {
+            opacity: 0.04;
+        }
+
+        body.light-mode .nav-bar {
+            background: #ffffff;
+            border-top: 1px solid rgba(0,0,0,0.08);
+        }
+
+        /* Toast notifications */
+        .toast-popup {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: #1c2620; color: white; padding: 12px 24px; border-radius: 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5); font-size: 13px; font-weight: 600; z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--card-border);
+        }
+        .toast-popup.show { transform: translateX(-50%) translateY(0); }
+
+        /* Navigation basse */
+        .nav-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 72px;
+            background: #090e0b;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #5c7065;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 33.33%;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-item.active { color: var(--glow-green); }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast-popup">Copié dans le presse-papier !</div>
+
+    <div class="currency-bar">
+        <span id="lblCurrencyTitle">Devise d'affichage</span>
+        <select id="localCurrencySelect" class="currency-selector">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="FC">CDF (FC)</option>
+            <option value="CAD">CAD (C$)</option>
+        </select>
+    </div>
+
+    <div class="profile-header">
+        <div class="avatar-container">
+            <svg class="progress-ring" width="130" height="130">
+                <circle class="progress-ring__circle" stroke="rgba(255,255,255,0.03)" stroke-width="5" fill="transparent" r="58" cx="65" cy="65"/>
+                <circle id="movingRing" class="progress-ring__circle" stroke="#1db954" stroke-width="5" fill="transparent" r="58" cx="65" cy="65" stroke-dasharray="364.42" stroke-dashoffset="364.42"/>
+            </svg>
+            <div class="avatar-frame" id="userAvatar">
+                <span id="avatarLetter">U</span>
+            </div>
+            <div class="level-tag" id="lblStatut">Calcul...</div>
+        </div>
+        <h2 id="lblNomAffiche">Utilisateur</h2>
+        <p id="profileEmail">Chargement de la session...</p>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-title">
+            <span id="lblTitleAppAge">⏳ Fidélité Tyti</span>
+        </div>
+        <div class="advanced-stats">
+            <div class="stat-box" style="grid-column: span 2; text-align: center;">
+                <div class="num" id="appAgeDays" style="font-size: 32px; color: var(--blue-default);">0 jour</div>
+                <div class="lbl" id="lblAppAgeSubtitle">Présence totale sur l'application</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-title">
+            <span id="lblTitleAnalyse">📈 Analyse de consistance</span>
+        </div>
+        <div class="advanced-stats">
+            <div class="stat-box">
+                <div class="num" id="statRatio">0%</div>
+                <div class="lbl" id="lblPresenceRate">Taux de présence</div>
+            </div>
+            <div class="stat-box">
+                <div class="num" id="statTotalDays">0.00 $</div>
+                <div class="lbl" id="lblAccountAge">Valeur Estimée</div>
+            </div>
+        </div>
+        <div class="consistency-bar-wrapper">
+            <div class="consistency-bar-fill" id="consistencyBar"></div>
+        </div>
+        <p class="analysis-text" id="analysisText">Analyse de vos données en cours...</p>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-title">
+            <span id="lblTitleActivity">📊 Rythme d'activité récent</span>
+        </div>
+        <div class="activity-chart">
+            <div class="chart-bar-container"><div id="bar0" class="chart-bar active"></div><span class="chart-day" id="day0">Dim</span></div>
+            <div class="chart-bar-container"><div id="bar1" class="chart-bar active"></div><span class="chart-day" id="day1">Lun</span></div>
+            <div class="chart-bar-container"><div id="bar2" class="chart-bar active"></div><span class="chart-day" id="day2">Mar</span></div>
+            <div class="chart-bar-container"><div id="bar3" class="chart-bar active current-day"></div><span class="chart-day" id="day3">Mer</span></div>
+            <div class="chart-bar-container"><div id="bar4" class="chart-bar"></div><span class="chart-day" id="day4">Jeu</span></div>
+            <div class="chart-bar-container"><div id="bar5" class="chart-bar"></div><span class="chart-day" id="day5">Ven</span></div>
+            <div class="chart-bar-container"><div id="bar6" class="chart-bar"></div><span class="chart-day" id="day6">Sam</span></div>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-title">
+            <span id="lblTitleTarget">🎯 Objectif Prochain Palier</span>
+        </div>
+        <div class="target-box">
+            <span id="targetName">Sprint Initial</span>
+            <span class="target-counter" id="targetCounter">0 / 30</span>
+        </div>
+        <div class="consistency-bar-wrapper" style="height: 6px; background: rgba(255,255,255,0.03)">
+            <div class="consistency-bar-fill" id="targetBar" style="background: var(--glow-green)"></div>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-title">
+            <span id="lblTitleBadges">🏆 Trophées Tyti</span>
+        </div>
+        <div class="badge-grid">
+            <div class="badge-item" id="badgePionnier">
+                <div class="badge-icon">🌱</div>
+                <span class="badge-name" id="lblBadgePionnier">Pionnier</span>
+            </div>
+            <div class="badge-item" id="badgeFidele">
+                <div class="badge-icon">🔥</div>
+                <span class="badge-name" id="lblBadgeRegulier">Régulier</span>
+            </div>
+            <div class="badge-item" id="badgeElite">
+                <div class="badge-icon">👑</div>
+                <span class="badge-name" id="lblBadgeInvincible">Invincible</span>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-share" id="btnShareProfile">
+        <svg style="width:18px;height:18px;fill:currentColor" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+        <span id="lblBtnShare">Partager mon tableau de bord</span>
+    </button>
+
+    <div class="nav-bar">
+        <a href="accueil.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-svg lucide lucide-house-plus-icon lucide-house-plus">
+                    <path d="M12.35 21H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 .71-1.53l7-6a2 2 0 0 1 2.58 0l7 6A2 2 0 0 1 21 10v2.35"/>
+                    <path d="M14.8 12.4A1 1 0 0 0 14 12h-4a1 1 0 0 0-1 1v8"/>
+                    <path d="M15 18h6"/>
+                    <path d="M18 15v6"/>
+                </svg>
+            <span id="lblNavHome">Accueil</span>
+        </a>
+        <a href="dollar.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-blue);"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            <span id="lblNavDollar">Streak</span>
+        </a>
+        <a href="parametre.html" class="nav-item active">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="lblNavMe">Moi</span>
+        </a>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+        authDomain: "tyti-deaee.firebaseapp.com",
+        projectId: "tyti-deaee",
+        storageBucket: "tyti-deaee.firebasestorage.app",
+        messagingSenderId: "668655272910",
+        appId: "1:668655272910:web:296794f893e36784d2619f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = initializeFirestore(app, {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    });
+
+    const dict = {
+        fr: {
+            curTitle: "Devise d'affichage", analyseTitle: "📈 Analyse de consistance", presence: "Taux de présence", accountAge: "Valeur Estimée",
+            activityTitle: "📊 Rythme d'activité récent", targetTitle: "🎯 Objectif Prochain Palier", badgeTitle: "🏆 Trophées Tyti",
+            shareBtn: "Partager mon tableau de bord", home: "Accueil", Streak: "Streak", me: "Moi",
+            pionnier: "Pionnier", regulier: "Régulier", invincible: "Invincible", session: "Chargement de la session...",
+            eliteRank: "Rang Élite", stableRank: "Rang Stable", delayRank: "En Retard",
+            txtElite: "🔥 Incroyable ! Votre régularité est exemplaire. Vous optimisez idéalement vos objectifs quotidiens.",
+            txtStable: "⚡ Bon rythme global. Attention à rester assidu cette semaine pour sécuriser votre progression.",
+            txtDelay: "⚠️ Relâchement détecté. Reprenez l'habitude de valider vos cycles pour inverser la tendance.",
+            sprint: "Sprint Évolution", annual: "Objectif Annuel 👑", copyToast: "Stats copiées dans le presse-papier ! 📋",
+            appAgeTitle: "⏳ Fidélité Tyti", appAgeSubtitle: "Présence totale sur l'application", daySingular: "jour", dayPlural: "jours"
+        },
+        en: {
+            curTitle: "Display Currency", analyseTitle: "📈 Consistency Analysis", presence: "Attendance Rate", accountAge: "Estimated Value",
+            activityTitle: "📊 Recent Activity Rhythm", targetTitle: "🎯 Next Milestone Target", badgeTitle: "🏆 Tyti Trophies",
+            shareBtn: "Share my dashboard", home: "Home", streak: "Streak", me: "Me",
+            pionnier: "Pioneer", regulier: "Regular", invincible: "Invincible", session: "Loading session...",
+            eliteRank: "Elite Rank", stableRank: "Stable Rank", delayRank: "Behind",
+            txtElite: "🔥 Incredible! Your consistency is exemplary. You perfectly optimize your daily goals.",
+            txtStable: "⚡ Good global rhythm. Be careful to stay diligent this week to secure your progress.",
+            txtDelay: "⚠️ Slack detected. Get back into the habit of validating your cycles to reverse the trend.",
+            sprint: "Evolution Sprint", annual: "Annual Target 👑", copyToast: "Stats copied to clipboard! 📋",
+            appAgeTitle: "⏳ Tyti Loyalty", appAgeSubtitle: "Total time spent on the app", daySingular: "day", dayPlural: "days"
+        },
+        ja: {
+            curTitle: "表示通貨", analyseTitle: "📈 一貫性分析", presence: "出席率", accountAge: "推定価値",
+            activityTitle: "📊 最近のアクティビティリズム", targetTitle: "🎯 次の目標ステップ", badgeTitle: "🏆 Tyti トロフィー",
+            shareBtn: "ダッシュボードを共有する", home: "ホーム", streak: "ストリーク", me: "マイページ",
+            pionnier: "開拓者", regulier: "常連", invincible: "無敵", session: "セッション読み込み中...",
+            eliteRank: "エリートランク", stableRank: "安定ランク", delayRank: "遅延中",
+            txtElite: "🔥 素晴らしい！ あなたの一貫性は模範的です。 毎日の目標を完全に最適化しています。",
+            txtStable: "⚡ 全体的に良いリズムです。 進捗を確実にするため、今週は怠けないように注意してください。",
+            txtDelay: "⚠️ 緩みが検出されました。 傾向を逆転させるために、サイクルを検証する習慣に戻りましょう。",
+            sprint: "進化スプリント", annual: "年間目標 👑", copyToast: "クリップボードにコピーされました！ 📋",
+            appAgeTitle: "⏳ Tyti ロイヤルティ", appAgeSubtitle: "アプリの合計利用日数", daySingular: "日", dayPlural: "日"
+        }
+    };
+
+    const lang = localStorage.getItem('tyti_lang') || 'fr';
+    const ui = dict[lang] || dict.fr;
+
+    function appliquerTraductionsUI() {
+        document.getElementById('lblCurrencyTitle').innerText = ui.curTitle;
+        document.getElementById('lblTitleAnalyse').innerText = ui.analyseTitle;
+        document.getElementById('lblPresenceRate').innerText = ui.presence;
+        document.getElementById('lblAccountAge').innerText = ui.accountAge;
+        document.getElementById('lblTitleActivity').innerText = ui.activityTitle;
+        document.getElementById('lblTitleTarget').innerText = ui.targetTitle;
+        document.getElementById('lblTitleBadges').innerText = ui.badgeTitle;
+        document.getElementById('lblBtnShare').innerText = ui.shareBtn;
+        document.getElementById('lblNavHome').innerText = ui.home;
+        document.getElementById('lblNavDollar').innerText = ui.streak;
+        document.getElementById('lblNavMe').innerText = ui.me;
+        document.getElementById('lblBadgePionnier').innerText = ui.pionnier;
+        document.getElementById('lblBadgeRegulier').innerText = ui.regulier;
+        document.getElementById('lblBadgeInvincible').innerText = ui.invincible;
+        document.getElementById('profileEmail').innerText = ui.session;
+        document.getElementById('lblTitleAppAge').innerText = ui.appAgeTitle;
+        document.getElementById('lblAppAgeSubtitle').innerText = ui.appAgeSubtitle;
+    }
+    appliquerTraductionsUI();
+
+    const userAvatar = document.getElementById('userAvatar');
+    const avatarLetter = document.getElementById('avatarLetter');
+    const lblNomAffiche = document.getElementById('lblNomAffiche');
+    const profileEmail = document.getElementById('profileEmail');
+    const movingRing = document.getElementById('movingRing');
+    const lblStatut = document.getElementById('lblStatut');
+    const statRatio = document.getElementById('statRatio');
+    const statTotalDays = document.getElementById('statTotalDays');
+    const consistencyBar = document.getElementById('consistencyBar');
+    const analysisText = document.getElementById('analysisText');
+    const targetName = document.getElementById('targetName');
+    const targetCounter = document.getElementById('targetCounter');
+    const targetBar = document.getElementById('targetBar');
+    const btnShareProfile = document.getElementById('btnShareProfile');
+    const toast = document.getElementById('toast');
+    const localCurrencySelect = document.getElementById('localCurrencySelect');
+    const appAgeDays = document.getElementById('appAgeDays');
+
+    const badgePionnier = document.getElementById('badgePionnier');
+    const badgeFidele = document.getElementById('badgeFidele');
+    const badgeElite = document.getElementById('badgeElite');
+
+    let baseValueInUSD = 0.00;
+
+    const exchangeRates = { USD: 1.0, EUR: 0.92, FC: 2800.0, CAD: 1.37 };
+
+    function setProgress(percent) {
+        const radius = movingRing.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        const offset = circumference - (percent / 100) * circumference;
+        movingRing.style.strokeDashoffset = offset;
+    }
+
+    function renderConvertedValue() {
+        const currentCurrency = localCurrencySelect.value;
+        const rate = exchangeRates[currentCurrency] || 1.0;
+        const convertedValue = baseValueInUSD * rate;
+
+        if (currentCurrency === "USD") statTotalDays.textContent = `${convertedValue.toFixed(2)} $`;
+        else if (currentCurrency === "EUR") statTotalDays.textContent = `${convertedValue.toFixed(2)} €`;
+        else if (currentCurrency === "FC") statTotalDays.textContent = `${Math.round(convertedValue)} FC`;
+        else if (currentCurrency === "CAD") statTotalDays.textContent = `${convertedValue.toFixed(2)} C$`;
+    }
+
+    localCurrencySelect.value = sessionStorage.getItem('user_currency') || '';
+    localCurrencySelect.addEventListener('change', () => {
+        sessionStorage.setItem('user_currency', localCurrencySelect.value);
+        renderConvertedValue();
+    });
+
+    // --- MODIFICATION MULTI-COMPTE COMPTEUR DE JOURS INDÉPENDANT ---
+    function gererCompteurJoursApp(uid, cloudDays) {
+        const keyDays = `tyti_days_active_${uid}`;
+        const keyLastVisit = `tyti_last_visit_date_${uid}`;
+
+        let localDays = parseInt(localStorage.getItem(keyDays)) || 0;
+
+        if (cloudDays && cloudDays > localDays) {
+            localDays = cloudDays;
+        }
+
+        const aujourdhuiStr = new Date().toISOString().split('T')[0];
+        const derniereVisite = localStorage.getItem(keyLastVisit);
+
+        if (derniereVisite !== aujourdhuiStr) {
+            localDays += 1;
+            localStorage.setItem(keyDays, localDays);
+            localStorage.setItem(keyLastVisit, aujourdhuiStr);
+            // Backup clé générique
+            localStorage.setItem('tyti_days_active', localDays);
+        }
+
+        appAgeDays.textContent = `${localDays} ${localDays > 1 ? ui.dayPlural : ui.daySingular}`;
+        return localDays;
+    }
+
+    // Gestion de l'UID actif local de référence
+    let activeUid = localStorage.getItem('tyti_active_uid');
+
+    // Affichage temporaire rapide basé sur l'UID actif
+    const initialDaysKey = activeUid ? `tyti_days_active_${activeUid}` : 'tyti_days_active';
+    const initLocalDays = parseInt(localStorage.getItem(initialDaysKey)) || parseInt(localStorage.getItem('tyti_days_active')) || 0;
+    appAgeDays.textContent = `${initLocalDays} ${initLocalDays > 1 ? ui.dayPlural : ui.daySingular}`;
+
+    const cachedPrenom = localStorage.getItem('user_prenom');
+    if (cachedPrenom) lblNomAffiche.textContent = cachedPrenom;
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user && activeUid && user.uid !== activeUid) {
+            user = null;
+        }
+
+        if (user) {
+            activeUid = user.uid;
+            localStorage.setItem('tyti_active_uid', activeUid);
+            profileEmail.textContent = user.email;
+            await chargerDonneesDashboard(user.uid, user.email);
+        } else {
+            if (activeUid) {
+                profileEmail.textContent = "...";
+                await chargerDonneesDashboard(activeUid, "");
+            } else {
+                window.location.href = "index.html";
+            }
+        }
+    });
+
+    async function chargerDonneesDashboard(uid, fallbackEmail) {
+        try {
+            const userDoc = await getDoc(doc(db, "users", uid));
+            let cloudDays = 0;
+            let data = {};
+
+            if (userDoc.exists()) {
+                data = userDoc.data();
+                cloudDays = data.jours_cumules_app || 0;
+                if (data.email) profileEmail.textContent = data.email;
+            } else if (fallbackEmail) {
+                profileEmail.textContent = fallbackEmail;
+            }
+
+            const totalJoursApplication = gererCompteurJoursApp(uid, cloudDays);
+
+            if (totalJoursApplication !== cloudDays && navigator.onLine) {
+                await updateDoc(doc(db, "users", uid), {
+                    jours_cumules_app: totalJoursApplication
+                }).catch(() => {});
+            }
+
+            if (userDoc.exists()) {
+                const prenom = data.name || "";
+                const nom = data.nom || "";
+                const safeName = `${prenom} ${nom}`.trim() || "Utilisateur Tyti";
+                lblNomAffiche.textContent = safeName;
+                localStorage.setItem('user_prenom', prenom || safeName);
+
+                if (data.photoURL || data.avatar) {
+                    userAvatar.innerHTML = `<img src="${data.photoURL || data.avatar}" alt="Avatar">`;
+                    localStorage.setItem('user_avatar', data.photoURL || data.avatar);
+                } else {
+                    avatarLetter.textContent = prenom ? prenom.charAt(0).toUpperCase() : "U";
+                    localStorage.removeItem('user_avatar');
+                }
+
+                let dateInscription = data.dateCreation ? new Date(data.dateCreation) : new Date();
+                let dateAujourdhui = new Date();
+                let diffTemps = Math.abs(dateAujourdhui - dateInscription);
+                let totalJoursEcoules = Math.floor(diffTemps / (1000 * 60 * 60 * 24)) || 1;
+
+                let joursValides = 0;
+                if (data.historiqueGains) {
+                    joursValides = Object.keys(data.historiqueGains).length;
+                }
+                if (joursValides === 0 && data.joursActifsCompteur) {
+                    joursValides = data.joursActifsCompteur;
+                }
+                if (joursValides > totalJoursEcoules) joursValides = totalJoursEcoules;
+                if (joursValides === 0) joursValides = 1;
+
+                let ratio = Math.round((joursValides / totalJoursEcoules) * 100);
+                if (ratio > 100) ratio = 100;
+
+                baseValueInUSD = joursValides * 0.50;
+                renderConvertedValue();
+
+                statRatio.textContent = `${ratio}%`;
+                setProgress(ratio);
+                consistencyBar.style.width = `${ratio}%`;
+
+                if (ratio >= 80) {
+                    lblStatut.textContent = ui.eliteRank;
+                    lblStatut.style.background = "linear-gradient(90deg, #1db954, #127535)";
+                    analysisText.textContent = ui.txtElite;
+                } else if (ratio >= 40) {
+                    lblStatut.textContent = ui.stableRank;
+                    lblStatut.style.background = "linear-gradient(90deg, #ffd233, #b3921b)";
+                    analysisText.textContent = ui.txtStable;
+                } else {
+                    lblStatut.textContent = ui.delayRank;
+                    lblStatut.style.background = "linear-gradient(90deg, #ff4a4a, #b32424)";
+                    analysisText.textContent = ui.txtDelay;
+                }
+
+                if (totalJoursApplication >= 1) badgePionnier.classList.add('unlocked');
+                if (totalJoursApplication >= 7) badgeFidele.classList.add('unlocked');
+                if (totalJoursApplication >= 30) badgeElite.classList.add('unlocked');
+
+                const joursSemaine = (lang === 'ja') ? ['日', '月', '火', '水', '木', '金', '土'] :
+                                     ((lang === 'en') ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] :
+                                     ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']);
+
+                const d = new Date();
+                for (let i = 0; i < 7; i++) {
+                    let targetDate = new Date();
+                    targetDate.setDate(d.getDate() - (6 - i));
+                    let dateStr = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`;
+
+                    let elBar = document.getElementById(`bar${i}`);
+                    let elDay = document.getElementById(`day${i}`);
+
+                    if(elDay) elDay.innerText = joursSemaine[targetDate.getDay()];
+
+                    if(elBar) {
+                        if ((data.historiqueGains && data.historiqueGains[dateStr] !== undefined) || i === 6) {
+                            elBar.classList.add('active');
+                            elBar.style.height = i === 6 ? "90%" : "70%";
+                        } else {
+                            elBar.classList.remove('active');
+                            elBar.style.height = "20%";
+                        }
+                        if (i === 6) {
+                            elBar.style.border = "1px solid var(--glow-green)";
+                            if(elDay) elDay.style.color = "var(--glow-green)";
+                        }
+                    }
+                }
+
+                let currentTarget = 30;
+                if (totalJoursApplication > 30) currentTarget = 90;
+                if (totalJoursApplication > 90) currentTarget = 365;
+
+                targetName.textContent = currentTarget === 365 ? ui.annual : `${ui.sprint} (${currentTarget} jrs)`;
+                targetCounter.textContent = `${totalJoursApplication} / ${currentTarget}`;
+                let targetPercent = Math.round((totalJoursApplication / currentTarget) * 100);
+                if (targetPercent > 100) targetPercent = 100;
+                targetBar.style.width = `${targetPercent}%`;
+            }
+        } catch(e) { console.log(e); }
+    }
+</script>
+</body>
+</html>

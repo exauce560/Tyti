@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Configuration</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(180deg, #0d2015 0%, #050706 100%);
+            --card-bg: #181e1b;
+            --card-border: rgba(255, 255, 255, 0.05);
+            --accent-tyti: #22c55e;
+            --text-color: #ffffff;
+            --text-secondary: #8e9a94;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .phone-container {
+            width: 100%;
+            height: 100vh;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .welcome-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-tyti);
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .explanation-box {
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .explanation-box p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #c2eed3;
+        }
+
+        .explanation-box strong {
+            color: var(--accent-tyti);
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 24px;
+            margin: auto 0;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .main-input {
+            width: 100%;
+            background: #0f1311;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .main-input:focus {
+            border-color: var(--accent-tyti);
+        }
+
+        .currency-badge {
+            position: absolute;
+            right: 16px;
+            font-weight: 700;
+            color: var(--accent-tyti);
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 14px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+        }
+        /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <div class="welcome-section">
+            <img id="userAvatar" class="welcome-avatar" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
+            <h1 id="txtBonjour" class="welcome-title">Bonjour !</h1>
+            <div class="explanation-box">
+                <p>💡 <strong>Comment ça fonctionne ?</strong> Définissez ici la somme fixe que vous gagnez chaque jour. Ce montant sera utilisé sur l'écran principal lorsque vous appuierez sur <strong>Confirmer</strong>. Votre solde sera calculé selon la règle : <br><strong>Solde initial + Confirmation + Bonus - Perte</strong>.</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="input-group">
+                <label class="input-label" for="dailyTargetInput">Somme fixe par jour</label>
+                <div class="input-wrapper">
+                    <input type="number" id="dailyTargetInput" class="main-input" placeholder="Ex: 500 ou 10" min="1" required inputmode="numeric">
+                    <span id="currencyBadge" class="currency-badge">CDF</span>
+                </div>
+            </div>
+            <button id="btnContinuer" class="submit-btn">Enregistrer & Ouvrir Tyti</button>
+        </div>
+
+        <div class="footer-note">
+            Application 100% Gratuite & Sécurisée
+        </div>
+
+    </div>
+
+    <script type="module">
+        // CORRECTION 1 : Remplacement des imports distants CDN par des imports de modules locaux (Compatibles Android/Bundler)
+        import { LocalNotifications } from '@capacitor/local-notifications';
+        import { initializeApp } from "firebase/app";
+        import { getAuth, onAuthStateChanged } from "firebase/auth";
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, updateDoc } from "firebase/firestore";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+            authDomain: "tyti-deaee.firebaseapp.com",
+            projectId: "tyti-deaee",
+            storageBucket: "tyti-deaee.firebasestorage.app",
+            messagingSenderId: "668655272910",
+            appId: "1:668655272910:web:296794f893e36784d2619f",
+            measurementId: "G-CRLKTT8R27"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
+
+        const txtBonjour = document.getElementById('txtBonjour');
+        const userAvatar = document.getElementById('userAvatar');
+        const dailyTargetInput = document.getElementById('dailyTargetInput');
+        const currencyBadge = document.getElementById('currencyBadge');
+        const btnContinuer = document.getElementById('btnContinuer');
+
+        let currentUserId = null;
+        let userCurrency = "CDF";
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                try {
+                    const docSnap = await getDoc(doc(db, "users", user.uid));
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+
+                        // Si la valeur existe déjà, redirection immédiate sans clignotement
+                        if (data.dailyTarget && data.dailyTarget > 0) {
+                            window.location.replace("accueil.html"); // CORRECTION 2 : .replace évite les retours en arrière infinis sur Android
+                            return;
+                        }
+
+                        txtBonjour.innerText = `Configuration, ${data.prenom} !`;
+                        if(data.avatar) userAvatar.src = data.avatar;
+
+                        userCurrency = data.currency || "CDF";
+                        if (userCurrency === "USD") currencyBadge.innerText = "$";
+                        else if (userCurrency === "EUR" || userCurrency === "FR") currencyBadge.innerText = "€";
+                        else currencyBadge.innerText = "CDF";
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            } else {
+                window.location.replace("index.html");
+            }
+        });
+
+        // CORRECTION 3 : Refonte totale du système de notifications pour utiliser le système natif Android (Capacitor)
+        async function planifierNotificationLocale() {
+            try {
+                // Demande de permission native Android
+                const status = await LocalNotifications.requestPermissions();
+                if (status.display === 'granted') {
+
+                    const maintenant = new Date();
+                    const cible20h = new Date();
+                    cible20h.setHours(20, 0, 0, 0);
+
+                    // Si 20h est déjà passé aujourd'hui, planifier pour demain
+                    if (maintenant > cible20h) {
+                        cible20h.setDate(cible20h.getDate() + 1);
+                    }
+
+                    // Programmation de la notification dans le système Android
+                    await LocalNotifications.schedule({
+                        notifications: [
+                            {
+                                title: "Tyti - Rappel",
+                                body: "Il est temps de valider votre confirmation journalière !",
+                                id: 1,
+                                schedule: { at: cible20h },
+                                sound: null,
+                                attachments: null,
+                                actionTypeId: "",
+                                extra: null
+                            }
+                        ]
+                    });
+                    console.log("Rappel natif planifié avec succès pour 20h !");
+                }
+            } catch (err) {
+                console.error("Impossible de planifier la notification native :", err);
+            }
+        }
+
+        btnContinuer.addEventListener('click', async () => {
+            const valeurSaisie = parseFloat(dailyTargetInput.value);
+
+            if (isNaN(valeurSaisie) || valeurSaisie <= 0) {
+                alert("Veuillez saisir une somme valide.");
+                return;
+            }
+
+            if (currentUserId) {
+                try {
+                    btnContinuer.innerText = "Sauvegarde...";
+                    btnContinuer.disabled = true;
+
+                    await updateDoc(doc(db, "users", currentUserId), {
+                        dailyTarget: valeurSaisie
+                    });
+
+                    // Déclenche la planification native avant de changer de page
+                    await planifierNotificationLocale();
+                    window.location.replace("accueil.html");
+
+                } catch (error) {
+                    console.error(error);
+                    btnContinuer.innerText = "Enregistrer & Accéder";
+                    btnContinuer.disabled = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Accueil</title>
+    <style>
+    /* --- VARIABLES PAR DÉFAUT : LIGHT MODE (MODE CLAIR) --- */
+    :root {
+        --bg-gradient: linear-gradient(180deg, #f0fdf4 0%, #e2e8f0 100%);
+        --card-bg: #ffffff;
+        --card-border: rgba(0, 0, 0, 0.08);
+        --primary-tyti: #3b82f6;
+        --accent-tyti: #16a34a;
+        --text-color: #0f172a;
+        --text-secondary: #64748b;
+        --danger-color: #ef4444;
+        --blue-default: #2563eb;
+        --dropdown-bg: #ffffff;
+        --popup-bg: #ffffff;
+        --popup-input-bg: #f8fafc;
+        --summary-bg: rgba(255, 255, 255, 0.8);
+        --icon-stroke: #475569;
+    }
+
+    /* --- VARIABLES EN DARK MODE (MODE SOMBRE) --- */
+    body.dark-mode {
+        --bg-gradient: linear-gradient(180deg, #0d2015 0%, #050706 100%);
+        --card-bg: #181e1b;
+        --card-border: rgba(255, 255, 255, 0.03);
+        --primary-tyti: #92aaff;
+        --accent-tyti: #22c55e;
+        --text-color: #ffffff;
+        --text-secondary: #8e9a94;
+        --danger-color: #ef4444;
+        --blue-default: #2563eb;
+        --dropdown-bg: #1c2420;
+        --popup-bg: #181e1b;
+        --popup-input-bg: #0f1311;
+        --summary-bg: rgba(24, 30, 27, 0.6);
+        --icon-stroke: #b3c5bb;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        outline: none;
+    }
+
+    body {
+        background: var(--bg-gradient);
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .phone-container {
+        width: 100%;
+        height: 100vh;
+        padding: 24px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    /* --- HEADER PROFILE --- */
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        position: relative;
+    }
+
+    .profile-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        position: relative;
+        z-index: 10;
+    }
+
+    .profile-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: rgba(0,0,0,0.1);
+    }
+
+    .profile-info-trigger {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .profile-name {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .chevron-icon {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: var(--text-secondary);
+        stroke-width: 2.5;
+        transition: transform 0.3s;
+    }
+
+    .profile-dropdown {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        background: var(--dropdown-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 14px;
+        width: 230px;
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        backdrop-filter: blur(10px);
+    }
+
+    .profile-dropdown.open { display: flex; }
+    .profile-dropdown p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        display: flex;
+        justify-content: space-between;
+    }
+    .profile-dropdown strong { color: var(--text-color); }
+
+    /* --- BURGER MENU CONTAINER --- */
+    .header-right-container {
+        position: relative;
+        z-index: 15;
+    }
+
+    .header-right-icons {
+        display: flex;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+    .header-right-icons:active {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .header-right-icons svg {
+        width: 22px;
+        height: 22px;
+        stroke: var(--text-color);
+        stroke-width: 2;
+        fill: none;
+    }
+
+    /* --- BURGER DROPDOWN --- */
+    .burger-dropdown {
+        position: absolute;
+        top: 45px;
+        right: 0;
+        background: var(--dropdown-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 8px;
+        width: 160px;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        backdrop-filter: blur(10px);
+    }
+
+    .burger-dropdown.open {
+        display: flex;
+    }
+
+    .burger-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-color);
+        text-decoration: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .burger-item:active {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .burger-item.logout-btn {
+        color: var(--danger-color);
+    }
+
+    /* --- SECTION COMPTEUR --- */
+    .balance-section {
+        text-align: center;
+        margin: 25px 0 15px 0;
+    }
+
+    .balance-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    .balance-amount {
+        font-size: 44px;
+        font-weight: 700;
+        color: var(--text-color);
+        letter-spacing: -0.5px;
+        line-height: 1;
+    }
+
+    /* --- GRILLE DES BOUTONS --- */
+    .actions-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        width: 100%;
+        margin-bottom: 15px;
+        padding-top: 5px;
+    }
+
+    .action-item {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        transition: background 0.15s, transform 0.1s, opacity 0.3s;
+    }
+
+    .action-item:active:not(.disabled) {
+        transform: scale(0.95);
+    }
+
+    .action-item.waiting {
+        border: 2px solid var(--accent-tyti);
+        box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+        background: rgba(34, 197, 94, 0.08);
+    }
+
+    .action-item.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .action-svg {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: var(--icon-stroke);
+        stroke-width: 2;
+    }
+
+    .action-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+
+    /* --- RÉSUMÉ DU JOUR --- */
+    .today-summary-box {
+        background: var(--summary-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    .summary-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    .summary-dot-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-color);
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+    .dot.target { background: var(--primary-tyti); }
+    .dot.bonus { background: var(--accent-tyti); }
+    .dot.perte { background: var(--danger-color); }
+
+    .summary-val {
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    /* --- BLOC PUB --- */
+    .ad-myme-container {
+        position: relative;
+        background: #0d1210;
+        border: 1px solid rgba(34, 197, 94, 0.15);
+        border-radius: 20px;
+        padding: 16px;
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: auto;
+        cursor: pointer;
+        min-height: 110px;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .ad-myme-container:active {
+        transform: scale(0.98);
+    }
+
+    .ad-background-slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        display: flex;
+    }
+
+    .ad-slide {
+        width: 33.333%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.18;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .ad-slide.active {
+        opacity: 0.45;
+        transform: scale(1.05);
+    }
+
+    .ad-triangle-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, transparent 50%, var(--accent-tyti) 50%);
+        z-index: 2;
+    }
+
+    .ad-triangle-text {
+        position: absolute;
+        top: 12px;
+        right: -2px;
+        transform: rotate(45deg);
+        font-size: 9px;
+        font-weight: 800;
+        color: #000;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .ad-icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #2563eb;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        flex-shrink: 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    .ad-icon-svg {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: #ffffff;
+        stroke-width: 2.2;
+    }
+
+    .ad-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding-right: 25px;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+    }
+
+    .ad-content-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .ad-message-animator {
+        font-size: 12px;
+        color: #e2e8f0;
+        font-weight: 500;
+        height: 16px;
+        line-height: 16px;
+        overflow: hidden;
+        transition: opacity 0.3s ease;
+        opacity: 1;
+    }
+
+    .ad-message-animator.fade {
+        opacity: 0;
+    }
+
+    /* --- ÉCRANS INTERMÉDIAIRES MODAL --- */
+    .custom-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        z-index: 100;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .popup-content {
+        background: var(--popup-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 24px;
+        width: 100%;
+        max-width: 340px;
+        text-align: center;
+        color: var(--text-color);
+    }
+
+    .popup-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .popup-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+
+    .popup-input, .popup-select {
+        width: 100%;
+        background: var(--popup-input-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 14px;
+        color: var(--text-color);
+        font-size: 16px;
+        outline: none;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .popup-select {
+        text-align-last: center;
+    }
+
+    .popup-btn {
+        width: 100%;
+        background: var(--accent-tyti);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    /* --- TOAST SYSTEM (TOP) --- */
+    .toast-container {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-100px);
+        background: var(--dropdown-bg);
+        border: 1px solid var(--accent-tyti);
+        padding: 14px 24px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        z-index: 1000;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .toast-container.show {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    /* --- ANIMATION SUCCESS FULLSCREEN --- */
+    .success-animation-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 2000;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .success-animation-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+    .checkmark-circle {
+        width: 80px; height: 80px;
+        border-radius: 50%;
+        background: rgba(34, 197, 94, 0.1);
+        border: 3px solid var(--accent-tyti);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        transform: scale(0.5);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .success-animation-overlay.active .checkmark-circle {
+        transform: scale(1);
+    }
+    .success-msg {
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    /* --- NAV LOWER --- */
+    .bottom-nav {
+        background: var(--card-bg);
+        border-top: 1px solid var(--card-border);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 75px;
+        margin: 0 -20px -24px -20px;
+        padding-bottom: 10px;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+
+    .nav-svg {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: var(--text-secondary);
+        stroke-width: 2.2;
+    }
+
+    .nav-link.center-dollar {
+        background: var(--blue-default);
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+    .nav-link.center-dollar .nav-svg {
+        stroke: #ffffff;
+    }
+
+    .nav-link.active:not(.center-dollar) .nav-svg {
+        stroke: var(--text-color);
+    }
+        /* --- SUPPRIMER LE BLEU APK --- */
+    * {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        outline: none;
+    }
+</style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <div class="header-top">
+            <div class="profile-bar" id="profileBar">
+                <img id="userAvatarContainer" class="profile-avatar" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
+                <div class="profile-info-trigger">
+                    <span id="userDisplayName" class="profile-name">Chargement...</span>
+                    <svg class="chevron-icon" id="chevron" viewBox="0 0 24 24">
+                        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <p><span id="dropEmailLabel">Email:</span> <strong id="infoEmail">-</strong></p>
+                    <p><span id="dropPaysLabel">Pays:</span> <strong id="infoPays">-</strong></p>
+                    <p><span id="dropSexeLabel">Sexe:</span> <strong id="infoSexe">-</strong></p>
+                    <p><span id="dropAgeLabel">Âge:</span> <strong id="infoAge">-</strong> <span id="dropYearsLabel">ans</span></p>
+                </div>
+            </div>
+
+            <div class="header-right-container">
+                <div class="header-right-icons" id="btnBurgerMenu">
+                    <svg viewBox="0 0 24 24"><path d="M3 5h18M3 12h18M3 19h18" stroke-linecap="round"/></svg>
+                </div>
+                <div class="burger-dropdown" id="burgerDropdown">
+                    <a href="suivi.html" class="burger-item">
+                        <span id="burgerProfileText">👤 Mon Profil</span>
+                    </a>
+                    <div class="burger-item logout-btn" id="btnLogout">
+                        <span id="burgerLogoutText">🚪 Déconnexion</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="balance-section">
+            <p class="balance-label" id="lblBalanceTitle">Solde Total Possédé</p>
+            <div class="balance-amount" id="totalBalance">0.00</div>
+        </div>
+
+        <div class="actions-row">
+            <div class="action-item" id="btnConfirmer">
+                <svg class="action-svg" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <span class="action-label" id="btnLabelConfirmer">Confirmer</span>
+            </div>
+
+            <div class="action-item disabled" id="btnBonus">
+                <svg class="action-svg" viewBox="0 0 24 24">
+                    <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                </svg>
+                <span class="action-label" id="btnLabelBonus">Bonus</span>
+            </div>
+
+            <div class="action-item disabled" id="btnPerte">
+                <svg class="action-svg" viewBox="0 0 24 24">
+                    <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>
+                </svg>
+                <span class="action-label" id="btnLabelPerte">Perte</span>
+            </div>
+
+            <div class="action-item" id="btnConvertir">
+                <svg class="action-svg" viewBox="0 0 24 24">
+                    <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                </svg>
+                <span class="action-label" id="btnLabelConvertir">Convertir</span>
+            </div>
+        </div>
+
+        <div class="today-summary-box">
+            <span class="summary-title" id="lblSummaryTitle">Suivi d'aujourd'hui</span>
+            <div class="summary-row">
+                <div class="summary-dot-label"><div class="dot target"></div><span id="lblTargetRow">Objectif Quotidien</span></div>
+                <div class="summary-val" id="summaryTarget">0.00</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-dot-label"><div class="dot bonus"></div><span id="lblBonusRow">Bonus Saisi</span></div>
+                <div class="summary-val" id="summaryBonus">0.00</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-dot-label"><div class="dot perte"></div><span id="lblPerteRow">Pertes / Dépenses</span></div>
+                <div class="summary-val" id="summaryPerte" style="color: var(--danger-color);">0.00</div>
+            </div>
+        </div>
+
+        <a href="https://exauce560.github.io/myme-app" target="_blank" class="ad-myme-container">
+
+            <div class="ad-background-slider">
+                <img src="photo1.png" class="ad-slide active" alt="Screen 1">
+                <img src="photo2.png" class="ad-slide" alt="Screen 2">
+                <img src="photo3.png" class="ad-slide" alt="Screen 3">
+            </div>
+
+            <div class="ad-triangle-badge">
+                <span class="ad-triangle-text">New</span>
+            </div>
+
+            <div class="ad-icon-box">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+            width="100%" viewBox="0 0 409 349" enable-background="new 0 0 409 349" xml:space="preserve">
+        <path fill="#0865FE" opacity="1.000000" stroke="none"
+            d="
+        M246.000000,350.000000
+            C164.000015,350.000000 82.500031,350.000000 1.000033,350.000000
+            C1.000022,233.666702 1.000022,117.333405 1.000011,1.000080
+            C137.333267,1.000053 273.666534,1.000053 409.999878,1.000027
+            C409.999908,117.333252 409.999908,233.666504 409.999939,349.999878
+            C355.500000,350.000000 301.000000,350.000000 246.000000,350.000000
+        M173.246979,32.815289
+            C105.320839,63.679356 71.894279,136.709457 93.351570,207.634857
+            C94.346092,210.922180 93.889420,213.142181 91.757347,215.745178
+            C79.721680,230.439240 67.798157,245.226410 55.958324,260.079041
+            C51.274639,265.954559 53.400345,271.606873 60.724625,272.951691
+            C64.810944,273.701996 68.975845,274.062775 73.118645,274.460388
+            C91.478821,276.222595 109.737701,275.623444 127.700165,271.221680
+            C131.130630,270.381042 133.231659,271.116516 135.690353,273.258179
+            C185.208618,316.391693 254.095947,321.557983 309.637085,286.377869
+            C391.044739,234.813782 398.639984,114.978897 323.739258,54.400433
+            C278.499207,17.811052 228.032608,11.346003 173.246979,32.815289
+        z"/>
+        <path fill="#000306" opacity="1.000000" stroke="none"
+            d="
+        M173.592041,32.655457
+            C228.032608,11.346003 278.499207,17.811052 323.739258,54.400433
+            C398.639984,114.978897 391.044739,234.813782 309.637085,286.377869
+            C254.095947,321.557983 185.208618,316.391693 135.690353,273.258179
+            C133.231659,271.116516 131.130630,270.381042 127.700165,271.221680
+            C109.737701,275.623444 91.478821,276.222595 73.118645,274.460388
+            C68.975845,274.062775 64.810944,273.701996 60.724625,272.951691
+            C53.400345,271.606873 51.274639,265.954559 55.958324,260.079041
+            C67.798157,245.226410 79.721680,230.439240 91.757347,215.745178
+            C93.889420,213.142181 94.346092,210.922180 93.351570,207.634857
+            C71.894279,136.709457 105.320839,63.679356 173.592041,32.655457
+        M306.859070,271.407715
+            C347.651611,240.679886 366.477448,199.654099 360.595184,149.078354
+            C352.184418,76.762886 286.621063,26.783800 214.333389,35.849106
+            C136.793030,45.573132 84.967270,122.315514 105.130745,198.095337
+            C107.881332,208.432800 105.627602,216.718948 99.379753,224.571976
+            C94.194298,231.089661 88.853363,237.483383 83.627144,243.968964
+            C78.882393,249.857040 74.199478,255.794968 69.306252,261.940826
+            C81.812012,265.226837 111.555847,264.117310 127.340538,259.564087
+            C134.590912,257.472656 140.241013,258.680328 146.092972,263.760101
+            C191.333389,303.031006 257.200195,306.218872 306.859070,271.407715
+        z"/>
+        <path fill="#0864FD" opacity="1.000000" stroke="none"
+            d="
+        M306.565002,271.615723
+            C257.200195,306.218872 191.333389,303.031006 146.092972,263.760101
+            C140.241013,258.680328 134.590912,257.472656 127.340538,259.564087
+            C111.555847,264.117310 81.812012,265.226837 69.306252,261.940826
+            C74.199478,255.794968 78.882393,249.857040 83.627144,243.968964
+            C88.853363,237.483383 94.194298,231.089661 99.379753,224.571976
+            C105.627602,216.718948 107.881332,208.432800 105.130745,198.095337
+            C84.967270,122.315514 136.793030,45.573132 214.333389,35.849106
+            C286.621063,26.783800 352.184418,76.762886 360.595184,149.078354
+            C366.477448,199.654099 347.651611,240.679886 306.565002,271.615723
+        M199.633286,166.055862
+            C208.133041,152.335953 206.389526,135.701218 195.364441,125.327286
+            C184.598984,115.197639 167.453400,113.539627 155.695465,121.754723
+            C144.376358,129.663223 139.423691,140.704117 142.078827,154.256500
+            C144.674789,167.506760 152.854080,176.260071 166.295975,179.184708
+            C179.856461,182.135132 190.839523,177.661301 199.633286,166.055862
+        M273.785309,142.313293
+            C269.592407,145.316727 265.333191,148.232681 261.224152,151.346802
+            C256.602631,154.849304 256.630493,158.627441 261.497467,161.627777
+            C273.534058,169.047882 285.687134,176.279327 297.807220,183.563614
+            C300.428497,185.139053 303.278809,186.085617 305.183289,182.813324
+            C307.092590,179.532745 304.812408,177.617355 302.181580,176.043839
+            C293.043793,170.578430 283.914642,165.098450 274.803406,159.588974
+            C273.194244,158.615952 271.686798,157.474792 269.795776,156.180954
+            C271.376984,154.892593 272.345428,154.011307 273.403625,153.255661
+            C283.287872,146.197372 293.205627,139.185883 303.071075,132.101440
+            C305.838409,130.114197 309.935822,128.135895 306.907318,123.947556
+            C303.817108,119.673889 300.663910,123.264565 297.967529,125.133591
+            C290.037140,130.630661 282.227539,136.301956 273.785309,142.313293
+        M247.869186,231.776855
+            C247.330612,230.380737 246.888031,228.938080 246.237411,227.596283
+            C242.815811,220.539902 238.080170,214.869720 229.718628,213.972626
+            C220.746811,213.010025 214.379776,217.610168 209.720047,224.695496
+            C201.540634,237.132645 200.550507,250.588226 205.595749,264.327179
+            C208.409225,271.988739 213.518616,277.957123 222.350235,278.978516
+            C231.569214,280.044739 237.939499,275.245026 242.748230,268.044159
+            C250.060150,257.094818 250.793671,245.062546 247.869186,231.776855
+        z"/>
+        <path fill="#05070A" opacity="1.000000" stroke="none"
+            d="
+        M199.415146,166.345596
+            C190.839523,177.661301 179.856461,182.135132 166.295975,179.184708
+            C152.854080,176.260071 144.674789,167.506760 142.078827,154.256500
+            C139.423691,140.704117 144.376358,129.663223 155.695465,121.754723
+            C167.453400,113.539627 184.598984,115.197639 195.364441,125.327286
+            C206.389526,135.701218 208.133041,152.335953 199.415146,166.345596
+        M168.502182,125.811707
+            C157.370514,128.805283 150.452118,137.126144 150.165115,147.865967
+            C149.909805,157.419907 156.259048,166.652145 165.289352,169.857697
+            C174.300858,173.056564 184.188583,170.581421 190.352295,163.583817
+            C196.679245,156.400894 198.066345,146.224243 193.836685,138.020279
+            C189.108307,128.848999 180.371017,124.446632 168.502182,125.811707
+        z"/>
+        <path fill="#00040B" opacity="1.000000" stroke="none"
+            d="
+        M274.077942,142.109161
+            C282.227539,136.301956 290.037140,130.630661 297.967529,125.133591
+            C300.663910,123.264565 303.817108,119.673889 306.907318,123.947556
+            C309.935822,128.135895 305.838409,130.114197 303.071075,132.101440
+            C293.205627,139.185883 283.287872,146.197372 273.403625,153.255661
+            C272.345428,154.011307 271.376984,154.892593 269.795776,156.180954
+            C271.686798,157.474792 273.194244,158.615952 274.803406,159.588974
+            C283.914642,165.098450 293.043793,170.578430 302.181580,176.043839
+            C304.812408,177.617355 307.092590,179.532745 305.183289,182.813324
+            C303.278809,186.085617 300.428497,185.139053 297.807220,183.563614
+            C285.687134,176.279327 273.534058,169.047882 261.497467,161.627777
+            C256.630493,158.627441 256.602631,154.849304 261.224152,151.346802
+            C265.333191,148.232681 269.592407,145.316727 274.077942,142.109161
+        z"/>
+        <path fill="#0F151F" opacity="1.000000" stroke="none"
+            d="
+        M247.974854,232.167480
+            C250.793671,245.062546 250.060150,257.094818 242.748230,268.044159
+            C237.939499,275.245026 231.569214,280.044739 222.350235,278.978516
+            C213.518616,277.957123 208.409225,271.988739 205.595749,264.327179
+            C200.550507,250.588226 201.540634,237.132645 209.720047,224.695496
+            C214.379776,217.610168 220.746811,213.010025 229.718628,213.972626
+            C238.080170,214.869720 242.815811,220.539902 246.237411,227.596283
+            C246.888031,228.938080 247.330612,230.380737 247.974854,232.167480
+        M245.247147,254.419632
+            C247.728119,243.765488 246.977356,233.562134 240.585449,224.335251
+            C234.717514,215.864716 225.158905,214.632721 217.183502,221.104965
+            C204.282104,231.574768 201.811066,256.967285 212.443253,269.815796
+            C218.512939,277.150726 226.954163,278.114838 234.482391,272.324127
+            C240.154770,267.960968 243.070923,261.888275 245.247147,254.419632
+        z"/>
+        <path fill="#FBFBFB" opacity="1.000000" stroke="none"
+            d="
+        M168.904236,125.736061
+            C180.371017,124.446632 189.108307,128.848999 193.836685,138.020279
+            C198.066345,146.224243 196.679245,156.400894 190.352295,163.583817
+            C184.188583,170.581421 174.300858,173.056564 165.289352,169.857697
+            C156.259048,166.652145 149.909805,157.419907 150.165115,147.865967
+            C150.452118,137.126144 157.370514,128.805283 168.904236,125.736061
+        z"/>
+        <path fill="#FCFCFC" opacity="1.000000" stroke="none"
+            d="
+        M245.148209,254.828827
+            C243.070923,261.888275 240.154770,267.960968 234.482391,272.324127
+            C226.954163,278.114838 218.512939,277.150726 212.443253,269.815796
+            C201.811066,256.967285 204.282104,231.574768 217.183502,221.104965
+            C225.158905,214.632721 234.717514,215.864716 240.585449,224.335251
+            C246.977356,233.562134 247.728119,243.765488 245.148209,254.828827
+        z"/>
+        </svg>
+            </div>
+
+            <div class="ad-content">
+                <span class="ad-content-title">Télécharger MYME App</span>
+                <div class="ad-message-animator" id="adMessageText">Une application de messagerie unique...</div>
+            </div>
+        </a>
+
+        <nav class="bottom-nav">
+                     <a href="accueil.html" class="nav-link active">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-svg lucide lucide-house-plus-icon lucide-house-plus">
+                    <path d="M12.35 21H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 .71-1.53l7-6a2 2 0 0 1 2.58 0l7 6A2 2 0 0 1 21 10v2.35"/>
+                    <path d="M14.8 12.4A1 1 0 0 0 14 12h-4a1 1 0 0 0-1 1v8"/>
+                    <path d="M15 18h6"/>
+                    <path d="M18 15v6"/>
+                </svg>
+            </a>
+            <a href="dollar.html" class="nav-link center-dollar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-blue);"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            </a>
+            <a href="parametre.html" class="nav-link">
+                <svg class="nav-svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.54 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </nav>
+    </div>
+
+    <div class="custom-popup" id="modalChoixObjectif" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-title" id="md1Title">🎯 Étape 1 : Objectif Journalier</div>
+            <div class="popup-desc" id="md1Desc">Avez-vous validé et obtenu votre somme d'objectif fixée pour aujourd'hui ?</div>
+            <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
+                <button class="popup-btn" id="btnObjectifOui" style="background: #22c55e; color: #fff; margin: 0;">Oui</button>
+                <button class="popup-btn" id="btnObjectifNon" style="background: #ef4444; color: #fff; margin: 0;">Non</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-popup" id="modalBonus" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-title" id="md2Title">🎁 Étape 2 : Bonus</div>
+            <div class="popup-desc" id="md2Desc">Indiquez la valeur du bonus additionnel obtenu aujourd'hui. Laissez à 0 s'il n'y en a aucun.</div>
+            <input type="number" class="popup-input" id="inputBonus" value="0" min="0" inputmode="numeric">
+            <button class="popup-btn" id="submitBonus">Suivant</button>
+        </div>
+    </div>
+
+    <div class="custom-popup" id="modalPerte" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-title" id="md3Title">📉 Étape 3 : Perte</div>
+            <div class="popup-desc" id="md3Desc">Indiquez le montant total perdu ou dépensé aujourd'hui. Laissez à 0 si aucune perte.</div>
+            <input type="number" class="popup-input" id="inputPerte" value="0" min="0" inputmode="numeric">
+            <button class="popup-btn" id="submitPerte" style="background: #ef4444; color: #fff;">Calculer et Clôturer</button>
+        </div>
+    </div>
+
+    <div class="custom-popup" id="modalConvertirSection" style="display: none;">
+        <div class="popup-content" style="max-width: 350px;">
+            <div class="popup-title" id="md4Title">💱 Conversions Multi-Devises</div>
+            <div class="popup-desc" id="md4Desc">Voici la valeur estimée de votre solde actuel calculée en temps réel :</div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; text-align: left;">
+                <div style="display: flex; justify-content: space-between; padding: 10px 14px; background: #0f1311; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02);">
+                    <span style="color: var(--text-secondary); font-size: 14px;">🇺🇸 Dollar (USD)</span>
+                    <strong id="convUSD" style="color: #fff;">0.00 $</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 10px 14px; background: #0f1311; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02);">
+                    <span style="color: var(--text-secondary); font-size: 14px;">🇪🇺 Euro (EUR)</span>
+                    <strong id="convEUR" style="color: #fff;">0.00 €</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 10px 14px; background: #0f1311; border-radius: 12px; border: 1px solid rgba(34,197,94,0.1);">
+                    <span style="color: var(--text-secondary); font-size: 14px;">🇨🇩 Franc Congolais (CDF)</span>
+                    <strong id="convCDF" style="color: var(--accent-tyti);">0 FC</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 10px 14px; background: #0f1311; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02);">
+                    <span style="color: var(--text-secondary); font-size: 14px;">🇯🇵 Yen Japonais (JPY)</span>
+                    <strong id="convJPY" style="color: #fff;">0 ¥</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 10px 14px; background: #0f1311; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02);">
+                    <span style="color: var(--text-secondary); font-size: 14px;">🇰🇷 Won Sud-Coréen (KRW)</span>
+                    <strong id="convKRW" style="color: #fff;">0 ₩</strong>
+                </div>
+            </div>
+            <button class="popup-btn" id="closeConversionBtn" style="background: #52625a; color: white;">Fermer</button>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastBox">
+        <span class="toast-text" id="toastText">Journée validée avec succès !</span>
+    </div>
+
+    <div class="success-animation-overlay" id="successAnimOverlay">
+        <div class="checkmark-circle">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <div class="success-msg" id="successAnimMsg">Calculs Clôturés !<br>Votre solde a été mis à jour.</div>
+    </div>
+
+<script>
+    // --- GESTION IMMÉDIATE DU THÈME (Prévention Anti-FOUC) ---
+    (function() {
+        const savedTheme = localStorage.getItem('tyti_theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    })();
+
+    // --- CAROUSEL PUB ---
+    (() => {
+        const slides = document.querySelectorAll('.ad-slide');
+        let currentSlide = 0;
+
+        if (slides.length > 0) {
+            setInterval(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, 2000);
+        }
+    })();
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+        authDomain: "tyti-deaee.firebaseapp.com",
+        projectId: "tyti-deaee",
+        storageBucket: "tyti-deaee.firebasestorage.app",
+        messagingSenderId: "668655272910",
+        appId: "1:668655272910:web:296794f893e36784d2619f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = initializeFirestore(app, {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    });
+
+    // --- SYSTEME TRADUCTION MULTILINGUE ---
+    const dict = {
+        fr: {
+            balanceTitle: "Solde Total Possédé", confirmer: "Confirmer", bonus: "Bonus", perte: "Perte", convertir: "Convertir",
+            summaryTitle: "Suivi d'aujourd'hui", targetRow: "Objectif Quotidien", bonusRow: "Bonus Saisi", perteRow: "Pertes / Dépenses",
+            dropEmail: "Email:", dropPays: "Pays:", dropSexe: "Sexe:", dropAge: "Âge:", dropYears: "ans",
+            burgerProfile: "👤 Mon Profil", burgerLogout: "🚪 Déconnexion",
+            md1Title: "🎯 Étape 1 : Objectif Journalier", md1Desc: "Avez-vous validé et obtenu votre somme d'objectif fixée pour aujourd'hui ?",
+            md1Oui: "Oui", md1Non: "Non", md2Title: "🎁 Étape 2 : Bonus", md2Desc: "Indiquez la valeur du bonus additionnel obtenu aujourd'hui. Laissez à 0 s'il n'y en a aucun.",
+            md2Next: "Suivant", md3Title: "📉 Étape 3 : Perte", md3Desc: "Indiquez le montant total perdu ou dépensé aujourd'hui. Laissez à 0 si aucune perte.",
+            md3Finish: "Calculer et Clôturer", md4Title: "💱 Conversions Multi-Devises", md4Desc: "Voici la valeur estimée de votre solde actuel calculée en temps réel :",
+            md4Close: "Fermer", valideStatus: "Validé", toastAlready: "🔒 Déjà confirmé aujourd'hui !",
+            toastDisconnectErr: "Erreur lors de la déconnexion.", toastCloudErr: "Erreur lors de la mise à jour Cloud.",
+            successAnim: "Calculs Clôturés !<br>Votre solde a été mis à jour."
+        },
+        en: {
+            balanceTitle: "Total Balance Owned", confirmer: "Confirm", bonus: "Bonus", perte: "Loss", convertir: "Convert",
+            summaryTitle: "Today's tracking", targetRow: "Daily Target", bonusRow: "Bonus Entered", perteRow: "Losses / Expenses",
+            dropEmail: "Email:", dropPays: "Country:", dropSexe: "Gender:", dropAge: "Age:", dropYears: "years",
+            burgerProfile: "👤 My Profile", burgerLogout: "🚪 Logout",
+            md1Title: "🎯 Step 1: Daily Target", md1Desc: "Have you validated and achieved your fixed daily target sum for today?",
+            md1Oui: "Yes", md1Non: "No", md2Title: "🎁 Step 2: Bonus", md2Desc: "Indicate the value of additional bonus achieved today. Leave at 0 if none.",
+            md2Next: "Next", md3Title: "📉 Step 3: Loss", md3Desc: "Indicate the total amount lost or spent today. Leave at 0 if no loss.",
+            md3Finish: "Calculate and Close", md4Title: "💱 Multi-Currency Conversions", md4Desc: "Here is the estimated real-time value of your current balance:",
+            md4Close: "Close", valideStatus: "Validated", toastAlready: "🔒 Already confirmed today!",
+            toastDisconnectErr: "Error during logout.", toastCloudErr: "Error during cloud update.",
+            successAnim: "Calculations Closed!<br>Your balance has been updated."
+        },
+        ja: {
+            balanceTitle: "総保有残高", confirmer: "確認する", bonus: "ボーナス", perte: "損失", convertir: "両替",
+            summaryTitle: "本日の進捗状況", targetRow: "毎日の目標額", bonusRow: "入力されたボーナス", perteRow: "損失 / 支出",
+            dropEmail: "メール:", dropPays: "国:", dropSexe: "性別:", dropAge: "年齢:", dropYears: "歳",
+            burgerProfile: "👤 プロフィール", burgerLogout: "🚪 ログアウト",
+            md1Title: "🎯 ステップ1 : 毎日の目標", md1Desc: "本日設定された目標額を達成し、確認を完了しましたか？",
+            md1Oui: "はい", md1Non: "いいえ", md2Title: "🎁 ステップ2 : ボーナス", md2Desc: "本日獲得した追加ボーナスの値を入力してください。ない場合は0のままにしてください。",
+            md2Next: "次へ", md3Title: "📉 ステップ3 : 損失", md3Desc: "本日紛失または支出した総額を入力してください。損失がない場合は0のままにしてください。",
+            md3Finish: "計算して締め切る", md4Title: "💱 複数通貨換算", md4Desc: "リアルタイムで計算された現在の残高の推定値は以下の通りです：",
+            md4Close: "閉じる", valideStatus: "確認済み", toastAlready: "🔒 本日はすでに確認済みです！",
+            toastDisconnectErr: "ログアウト中にエラーが発生しました。", toastCloudErr: "クラウド更新中にエラーが発生しました。",
+            successAnim: "計算が締め切られました！<br>残高が更新されました。"
+        }
+    };
+
+    const lang = localStorage.getItem('tyti_lang') || 'fr';
+    const ui = dict[lang] || dict.fr;
+
+    function appliquerTraductionsUI() {
+        document.getElementById('lblBalanceTitle').innerText = ui.balanceTitle;
+        document.getElementById('btnLabelConfirmer').innerText = ui.confirmer;
+        document.getElementById('btnLabelBonus').innerText = ui.bonus;
+        document.getElementById('btnLabelPerte').innerText = ui.perte;
+        document.getElementById('btnLabelConvertir').innerText = ui.convertir;
+        document.getElementById('lblSummaryTitle').innerText = ui.summaryTitle;
+        document.getElementById('lblTargetRow').innerText = ui.targetRow;
+        document.getElementById('lblBonusRow').innerText = ui.bonusRow;
+        document.getElementById('lblPerteRow').innerText = ui.perteRow;
+
+        document.getElementById('dropEmailLabel').innerText = ui.dropEmail;
+        document.getElementById('dropPaysLabel').innerText = ui.dropPays;
+        document.getElementById('dropSexeLabel').innerText = ui.dropSexe;
+        document.getElementById('dropAgeLabel').innerText = ui.dropAge;
+        document.getElementById('dropYearsLabel').innerText = ui.dropYears;
+
+        document.getElementById('burgerProfileText').innerText = ui.burgerProfile;
+        document.getElementById('burgerLogoutText').innerText = ui.burgerLogout;
+
+        document.getElementById('md1Title').innerText = ui.md1Title;
+        document.getElementById('md1Desc').innerText = ui.md1Desc;
+        document.getElementById('btnObjectifOui').innerText = ui.md1Oui;
+        document.getElementById('btnObjectifNon').innerText = ui.md1Non;
+
+        document.getElementById('md2Title').innerText = ui.md2Title;
+        document.getElementById('md2Desc').innerText = ui.md2Desc;
+        document.getElementById('submitBonus').innerText = ui.md2Next;
+
+        document.getElementById('md3Title').innerText = ui.md3Title;
+        document.getElementById('md3Desc').innerText = ui.md3Desc;
+        document.getElementById('submitPerte').innerText = ui.md3Finish;
+
+        document.getElementById('md4Title').innerText = ui.md4Title;
+        document.getElementById('md4Desc').innerText = ui.md4Desc;
+        document.getElementById('closeConversionBtn').innerText = ui.md4Close;
+    }
+    appliquerTraductionsUI();
+
+    // --- FONCTIONS DE GESTION THÈME (DARK / LIGHT MODE) ---
+    function appliquerThemeLocal(themeName) {
+        if (themeName === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+        localStorage.setItem('tyti_theme', themeName);
+
+        // Si un switch HTML existe sur la page (ex: id="themeToggleBtn")
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (themeToggleBtn) {
+            themeToggleBtn.checked = (themeName === 'dark');
+        }
+    }
+
+    async function basculerTheme() {
+        const estSombre = document.body.classList.contains('dark-mode');
+        const nouveauTheme = estSombre ? 'light' : 'dark';
+
+        appliquerThemeLocal(nouveauTheme);
+
+        if (currentUserId) {
+            try {
+                await updateDoc(doc(db, "users", currentUserId), { theme: nouveauTheme });
+            } catch (e) {
+                console.log("Mise à jour thème impossible sur cloud (mode hors-ligne ou restreint)");
+            }
+        }
+    }
+
+    // Écouteur pour le switch de thème (s'il existe dans le HTML)
+    const btnToggleThemeUI = document.getElementById('themeToggleBtn');
+    if (btnToggleThemeUI) {
+        btnToggleThemeUI.addEventListener('change', basculerTheme);
+    }
+
+    const totalBalance = document.getElementById('totalBalance');
+    const btnConfirmer = document.getElementById('btnConfirmer');
+    const btnBonus = document.getElementById('btnBonus');
+    const btnPerte = document.getElementById('btnPerte');
+    const btnConvertir = document.getElementById('btnConvertir');
+
+    const profileBar = document.getElementById('profileBar');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const userAvatarContainer = document.getElementById('userAvatarContainer');
+
+    const btnBurgerMenu = document.getElementById('btnBurgerMenu');
+    const burgerDropdown = document.getElementById('burgerDropdown');
+    const btnLogout = document.getElementById('btnLogout');
+
+    let currentUserId = null;
+    let cachedUserData = null;
+
+    let tempConfirmation = 0;
+    let tempBonus = 0;
+    let tempPerte = 0;
+
+    function calculerAge(dateNaissanceStr) {
+        if (!dateNaissanceStr) return "-";
+        const dateNaissance = new Date(dateNaissanceStr);
+        if (isNaN(dateNaissance.getTime())) return "-";
+        const aujourdHui = new Date();
+        let age = aujourdHui.getFullYear() - dateNaissance.getFullYear();
+        const moisDiff = aujourdHui.getMonth() - dateNaissance.getMonth();
+        if (moisDiff < 0 || (moisDiff === 0 && aujourdHui.getDate() < dateNaissance.getDate())) { age--; }
+        return age;
+    }
+
+    const localSolde = localStorage.getItem('somme_actuelle') || "0.00";
+    const localCurrency = localStorage.getItem('user_currency') || "USD";
+    let symboleInitial = localCurrency === "USD" ? "$" : (localCurrency === "EUR" ? "€" : "FC");
+    totalBalance.innerText = `${parseFloat(localSolde).toLocaleString('fr-FR', {minimumFractionDigits: 2})} ${symboleInitial}`;
+
+    const localPrenom = localStorage.getItem('user_prenom');
+    if (localPrenom) { document.getElementById('userDisplayName').innerText = localPrenom; }
+
+    profileBar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        burgerDropdown.classList.remove('open');
+        profileDropdown.classList.toggle('open');
+        document.getElementById('chevron').style.transform = profileDropdown.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+    });
+
+    btnBurgerMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.remove('open');
+        document.getElementById('chevron').style.transform = 'rotate(0deg)';
+        burgerDropdown.classList.toggle('open');
+    });
+
+    document.addEventListener('click', () => {
+        profileDropdown.classList.remove('open');
+        burgerDropdown.classList.remove('open');
+        document.getElementById('chevron').style.transform = 'rotate(0deg)';
+    });
+
+    btnLogout.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            localStorage.clear();
+            window.location.replace("index.html");
+        } catch (error) {
+            showToast(ui.toastDisconnectErr);
+        }
+    });
+
+    const adMessages = [
+        "Téléchargez MYME, une app de messagerie.",
+        "Personnalisez avec la police de votre choix !",
+        "Une expérience fluide et ultra sécurisée.",
+        "Découvrez de nouvelles fonctionnalités uniques."
+    ];
+    let currentAdIndex = 0;
+    const adMessageElement = document.getElementById('adMessageText');
+
+    setInterval(() => {
+        if(adMessageElement) {
+            adMessageElement.classList.add('fade');
+            setTimeout(() => {
+                currentAdIndex = (currentAdIndex + 1) % adMessages.length;
+                adMessageElement.innerText = adMessages[currentAdIndex];
+                adMessageElement.classList.remove('fade');
+            }, 300);
+        }
+    }, 4000);
+
+    function showToast(text) {
+        const box = document.getElementById('toastBox');
+        document.getElementById('toastText').innerText = text;
+        box.classList.add('show');
+        setTimeout(() => box.classList.remove('show'), 3500);
+    }
+
+    function triggerSuccessAnimation(msg) {
+        const overlay = document.getElementById('successAnimOverlay');
+        document.getElementById('successAnimMsg').innerHTML = msg;
+        overlay.classList.add('active');
+        setTimeout(() => { overlay.classList.remove('active'); }, 3000);
+    }
+
+    function getAujourdHuiDateString() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function getSymboleDevise(currency) {
+        if (currency === "USD") return "$";
+        if (currency === "€") return "€";
+        if (currency === "RDC" || currency === "CDF" || currency === "FC") return "FC";
+        if (currency === "Canada" || currency === "C$") return "C$";
+        return "-";
+    }
+
+    function rafraichirAffichageSolde(data) {
+        let symbole = getSymboleDevise(data.currency);
+        let solde = data.solde !== undefined ? data.solde : 0.00;
+        totalBalance.innerText = `${solde.toLocaleString('fr-FR', {minimumFractionDigits: 2})} ${symbole}`;
+        let dailyConfigAmount = data.dailyAmount !== undefined ? data.dailyAmount : 0.00;
+        document.getElementById('summaryTarget').innerText = `${dailyConfigAmount.toFixed(2)} ${symbole}`;
+    }
+
+    async function verifierVerrouillageJournalier(data) {
+        const aujourdhui = getAujourdHuiDateString();
+        let symbole = getSymboleDevise(data.currency || "USD");
+        let dailyConfigAmount = data.dailyAmount !== undefined ? data.dailyAmount : 0.00;
+
+        if (data.lastConfirmationDate === aujourdhui) {
+            btnConfirmer.classList.add('disabled');
+            btnBonus.classList.add('disabled');
+            btnPerte.classList.add('disabled');
+            btnConfirmer.querySelector('.action-label').innerText = ui.valideStatus;
+
+            document.getElementById('summaryTarget').innerText = `${(data.dernierObjectifValide !== undefined ? data.dernierObjectifValide : dailyConfigAmount).toFixed(2)} ${symbole}`;
+            document.getElementById('summaryBonus').innerText = `${(data.dernierBonus || 0).toFixed(2)} ${symbole}`;
+            document.getElementById('summaryPerte').innerText = `${(data.dernierePerte || 0).toFixed(2)} ${symbole}`;
+        } else {
+            document.getElementById('summaryBonus').innerText = `0.00 ${symbole}`;
+            document.getElementById('summaryPerte').innerText = `0.00 ${symbole}`;
+            document.getElementById('inputBonus').value = "0";
+            document.getElementById('inputPerte').value = "0";
+
+            if (currentUserId && (data.dernierBonus !== 0 || data.dernierePerte !== 0 || data.dernierObjectifValide !== undefined)) {
+                try {
+                    await updateDoc(doc(db, "users", currentUserId), {
+                        dernierBonus: 0,
+                        dernierePerte: 0,
+                        dernierObjectifValide: dailyConfigAmount
+                    });
+                    cachedUserData.dernierBonus = 0;
+                    cachedUserData.dernierePerte = 0;
+                    cachedUserData.dernierObjectifValide = dailyConfigAmount;
+                } catch(e) {
+                    console.log("Erreur lors du reset de la nouvelle journée (Droits/Permissions Firestore restreints).");
+                }
+            }
+        }
+    }
+
+    // --- LOGIQUE MULTI-COMPTE SYNCHRONISÉE ET RANGEMENT THÈME ---
+    let activeUid = localStorage.getItem('tyti_active_uid');
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user && activeUid && user.uid !== activeUid) {
+            user = null;
+        }
+
+        if (user) {
+            currentUserId = user.uid;
+            activeUid = user.uid;
+            localStorage.setItem('tyti_active_uid', activeUid);
+
+            try {
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                if (docSnap.exists()) {
+                    cachedUserData = docSnap.data();
+
+                    // Synchronisation du Thème depuis Firebase si présent
+                    if (cachedUserData.theme) {
+                        appliquerThemeLocal(cachedUserData.theme);
+                    }
+
+                    localStorage.setItem('user_prenom', cachedUserData.name || "");
+                    localStorage.setItem('somme_actuelle', cachedUserData.solde || "0");
+                    localStorage.setItem('user_currency', cachedUserData.currency || "-");
+
+                    document.getElementById('userDisplayName').innerText = cachedUserData.name || "Utilisateur";
+                    document.getElementById('infoEmail').innerText = cachedUserData.email || user.email;
+                    document.getElementById('infoPays').innerText = cachedUserData.origin || cachedUserData.country || "-";
+                    document.getElementById('infoSexe').innerText = cachedUserData.sexe || cachedUserData.gender || "-";
+
+                    const dateNaissanceTrouvee = cachedUserData.birthDate || cachedUserData.naissance || cachedUserData.birthday;
+                    document.getElementById('infoAge').innerText = calculerAge(dateNaissanceTrouvee);
+
+                    if (userAvatarContainer && cachedUserData.avatar) {
+                        userAvatarContainer.src = cachedUserData.avatar;
+                    }
+
+                    rafraichirAffichageSolde(cachedUserData);
+                    await verifierVerrouillageJournalier(cachedUserData);
+                }
+            } catch (e) {
+                console.log("Mode hors-ligne ou erreur réseau. Sécurités locales activées.");
+            }
+        } else {
+            if (activeUid) {
+                currentUserId = activeUid;
+                try {
+                    const docSnap = await getDoc(doc(db, "users", activeUid));
+                    if (docSnap.exists()) {
+                        cachedUserData = docSnap.data();
+
+                        if (cachedUserData.theme) {
+                            appliquerThemeLocal(cachedUserData.theme);
+                        }
+
+                        localStorage.setItem('user_prenom', cachedUserData.name || "");
+                        localStorage.setItem('somme_actuelle', cachedUserData.solde || "0");
+                        localStorage.setItem('user_currency', cachedUserData.currency || "-");
+
+                        document.getElementById('userDisplayName').innerText = cachedUserData.name || "Utilisateur";
+                        document.getElementById('infoEmail').innerText = cachedUserData.email || "-";
+                        document.getElementById('infoPays').innerText = cachedUserData.origin || cachedUserData.country || "-";
+                        document.getElementById('infoSexe').innerText = cachedUserData.sexe || cachedUserData.gender || "-";
+
+                        const dateNaissanceTrouvee = cachedUserData.birthDate || cachedUserData.naissance || cachedUserData.birthday;
+                        document.getElementById('infoAge').innerText = calculerAge(dateNaissanceTrouvee);
+
+                        if (userAvatarContainer && cachedUserData.avatar) {
+                            userAvatarContainer.src = cachedUserData.avatar;
+                        }
+
+                        rafraichirAffichageSolde(cachedUserData);
+                        await verifierVerrouillageJournalier(cachedUserData);
+                    }
+                } catch (e) {
+                    console.log("Erreur lors du chargement distant du compte secondaire.");
+                }
+            } else {
+                window.location.replace("index.html");
+            }
+        }
+    });
+
+    // --- SÉQUENCE DES POPUPS (OUI / NON / BONUS / PERTE) ---
+    btnConfirmer.addEventListener('click', () => {
+        if (btnConfirmer.classList.contains('disabled')) {
+            showToast(ui.toastAlready);
+            return;
+        }
+        document.getElementById('modalChoixObjectif').style.display = 'flex';
+    });
+
+    document.getElementById('btnObjectifOui').addEventListener('click', () => {
+        let symbole = getSymboleDevise(cachedUserData ? cachedUserData.currency : "USD");
+        tempConfirmation = cachedUserData ? (cachedUserData.dailyAmount || 0) : 0;
+        document.getElementById('summaryTarget').innerText = `${tempConfirmation.toFixed(2)} ${symbole}`;
+        document.getElementById('modalChoixObjectif').style.display = 'none';
+        btnConfirmer.classList.add('disabled');
+        btnBonus.classList.remove('disabled');
+        btnBonus.classList.add('waiting');
+        document.getElementById('modalBonus').style.display = 'flex';
+    });
+
+    document.getElementById('btnObjectifNon').addEventListener('click', () => {
+        let symbole = getSymboleDevise(cachedUserData ? cachedUserData.currency : "USD");
+        tempConfirmation = 0;
+        document.getElementById('summaryTarget').innerText = `0.00 ${symbole}`;
+        document.getElementById('modalChoixObjectif').style.display = 'none';
+        btnConfirmer.classList.add('disabled');
+        btnBonus.classList.remove('disabled');
+        btnBonus.classList.add('waiting');
+        document.getElementById('modalBonus').style.display = 'flex';
+    });
+
+    document.getElementById('submitBonus').addEventListener('click', () => {
+        const val = parseFloat(document.getElementById('inputBonus').value);
+        tempBonus = !isNaN(val) && val >= 0 ? val : 0;
+        let symbole = getSymboleDevise(cachedUserData ? cachedUserData.currency : "USD");
+        document.getElementById('summaryBonus').innerText = `${tempBonus.toFixed(2)} ${symbole}`;
+        document.getElementById('modalBonus').style.display = 'none';
+        btnBonus.classList.remove('waiting');
+        btnBonus.classList.add('disabled');
+        btnPerte.classList.remove('disabled');
+        btnPerte.classList.add('waiting');
+        document.getElementById('modalPerte').style.display = 'flex';
+    });
+
+    document.getElementById('submitPerte').addEventListener('click', async () => {
+        const val = parseFloat(document.getElementById('inputPerte').value);
+        tempPerte = !isNaN(val) && val >= 0 ? val : 0;
+        let symbole = getSymboleDevise(cachedUserData ? cachedUserData.currency : "USD");
+        document.getElementById('summaryPerte').innerText = `${tempPerte.toFixed(2)} ${symbole}`;
+        document.getElementById('modalPerte').style.display = 'none';
+        btnPerte.classList.remove('waiting');
+        btnPerte.classList.add('disabled');
+
+        if(cachedUserData && currentUserId) {
+            let soldeActuel = cachedUserData.solde || 0;
+            let gainNetDuJour = tempConfirmation + tempBonus - tempPerte;
+            let nouveauSolde = soldeActuel + gainNetDuJour;
+
+            const aujourdhuiStr = getAujourdHuiDateString();
+            let historiqueActuel = cachedUserData.historiqueGains || {};
+            historiqueActuel[aujourdhuiStr] = (historiqueActuel[aujourdhuiStr] || 0) + gainNetDuJour;
+
+            try {
+                await updateDoc(doc(db, "users", currentUserId), {
+                    solde: nouveauSolde,
+                    lastConfirmationDate: aujourdhuiStr,
+                    dernierePerte: tempPerte,
+                    dernierBonus: tempBonus,
+                    dernierObjectifValide: tempConfirmation,
+                    historiqueGains: historiqueActuel
+                });
+
+                localStorage.setItem('somme_actuelle', nouveauSolde);
+                cachedUserData.solde = nouveauSolde;
+                cachedUserData.lastConfirmationDate = aujourdhuiStr;
+                cachedUserData.dernierePerte = tempPerte;
+                cachedUserData.dernierBonus = tempBonus;
+                cachedUserData.dernierObjectifValide = tempConfirmation;
+                cachedUserData.historiqueGains = historiqueActuel;
+
+                rafraichirAffichageSolde(cachedUserData);
+                document.getElementById('summaryTarget').innerText = `${tempConfirmation.toFixed(2)} ${symbole}`;
+                document.getElementById('summaryBonus').innerText = `${tempBonus.toFixed(2)} ${symbole}`;
+                document.getElementById('summaryPerte').innerText = `${tempPerte.toFixed(2)} ${symbole}`;
+
+                triggerSuccessAnimation(ui.successAnim);
+            } catch(err) {
+                showToast(ui.toastCloudErr);
+                console.error(err);
+            }
+        }
+    });
+
+    // --- SYSTÈME DE CONVERSION AUTOMATIQUE ---
+    btnConvertir.addEventListener('click', () => {
+        let soldeDeBase = cachedUserData ? (cachedUserData.solde || 0) : parseFloat(localStorage.getItem('somme_actuelle') || "0");
+        let deviseDeBase = cachedUserData ? (cachedUserData.currency || "USD") : (localStorage.getItem('user_currency') || "USD");
+
+        let soldeEnUSD = soldeDeBase;
+        if (deviseDeBase === "CDF" || deviseDeBase === "FC") {
+            soldeEnUSD = soldeDeBase / 2800;
+        } else if (deviseDeBase === "EUR" || deviseDeBase === "€") {
+            soldeEnUSD = soldeDeBase / 0.92;
+        } else if (deviseDeBase === "C$" || deviseDeBase === "Canada") {
+            soldeEnUSD = soldeDeBase / 1.36;
+        }
+
+        let montantUSD = soldeEnUSD;
+        let montantEUR = soldeEnUSD * 0.92;
+        let montantCDF = soldeEnUSD * 2800;
+        let montantJPY = soldeEnUSD * 155;
+        let montantKRW = soldeEnUSD * 1360;
+
+        document.getElementById('convUSD').innerText = `${montantUSD.toLocaleString('fr-FR', {minimumFractionDigits: 2})} $`;
+        document.getElementById('convEUR').innerText = `${montantEUR.toLocaleString('fr-FR', {minimumFractionDigits: 2})} €`;
+        document.getElementById('convCDF').innerText = `${Math.round(montantCDF).toLocaleString('fr-FR')} FC`;
+        document.getElementById('convJPY').innerText = `${Math.round(montantJPY).toLocaleString('fr-FR')} ¥`;
+        document.getElementById('convKRW').innerText = `${Math.round(montantKRW).toLocaleString('fr-FR')} ₩`;
+
+        document.getElementById('modalConvertirSection').style.display = 'flex';
+    });
+
+    document.getElementById('closeConversionBtn').addEventListener('click', () => {
+        document.getElementById('modalConvertirSection').style.display = 'none';
+    });
+</script>
+</body>
+</html>

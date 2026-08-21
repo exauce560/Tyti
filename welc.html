@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Accueil</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --accent-green: #8AFF63;
+            --text-color: #0f172a;
+            --text-secondary: #64748b;
+            --radius-main: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .phone-container {
+            width: 100%;
+            height: 100vh;
+            padding: 80px 24px 50px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .logo-img {
+            width: 140px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .message-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-left: 20px;
+            margin: 40px 0;
+        }
+
+        .welcome-box {
+            text-align: right;
+            max-width: 90%;
+        }
+
+        .welcome-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .bottom-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+        }
+
+        .login-redirect-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            max-width: 50%;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .login-link {
+            color: var(--accent-green);
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
+            display: inline-block;
+            transition: opacity 0.2s;
+        }
+
+        .login-link:active {
+            opacity: 0.7;
+        }
+
+        .btn-create {
+            flex-shrink: 0;
+            padding: 10px 22px;
+            background-color: var(--accent-green);
+            color: #000000;
+            border: none;
+            border-radius: var(--radius-main);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 18px rgba(138, 255, 99, 0.35);
+            text-align: center;
+        }
+
+        .btn-create:active {
+            transform: scale(0.96);
+            box-shadow: 0 2px 8px rgba(138, 255, 99, 0.2);
+        }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <div class="logo-container">
+            <img src="logob.png" alt="Tyti Logo" class="logo-img">
+        </div>
+
+        <div class="message-container">
+            <div class="welcome-box">
+                <h2 class="welcome-title" data-i18n="welcome_title">Bienvenue sur Tyti</h2>
+                <p class="welcome-desc" data-i18n="welcome_subtitle">Votre espace pour gérer vos revenus simplement.</p>
+            </div>
+        </div>
+
+        <div class="bottom-container">
+            <div class="login-redirect-text" id="loginTextContainer">
+                <span data-i18n="already_have_account">Vous avez déjà un compte ? Connectez-vous.</span>
+            </div>
+            <button class="btn-create" id="actionCreate" data-i18n="btn_continue">Créer un compte</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- BLOC DE TRADUCTION AUTOMATIQUE ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const currentLang = localStorage.getItem('tyti_lang') || 'fr';
+
+            fetch('lang.json')
+                .then(response => {
+                    if (!response.ok) throw new Error("Erreur de chargement");
+                    return response.json();
+                })
+                .then(translations => {
+                    const langData = translations[currentLang];
+                    if (!langData) return;
+
+                    // Traduction automatique des éléments avec data-i18n
+                    document.querySelectorAll('[data-i18n]').forEach(element => {
+                        const key = element.getAttribute('data-i18n');
+                        if (langData[key]) {
+                            element.textContent = langData[key];
+                        }
+                    });
+
+                    // Cas particulier : Reconstruction du lien cliquable "Connectez-vous"
+                    // pour éviter que la traduction écrase l'événement de clic.
+                    setupLoginLink(currentLang);
+                })
+                .catch(error => console.error("Erreur i18n:", error));
+        });
+
+        // Fonction pour garder le lien "Connectez-vous" cliquable selon la langue
+        function setupLoginLink(lang) {
+            const container = document.getElementById('loginTextContainer');
+
+            if (lang === 'en') {
+                container.innerHTML = 'Already have an account? <span class="login-link" id="linkLogin">Log in.</span>';
+            } else if (lang === 'ja') {
+                container.innerHTML = 'すでにアカウントをお持ちですか？ <span class="login-link" id="linkLogin">ログインしてください。</span>';
+            } else {
+                container.innerHTML = 'Vous avez déjà un compte ? <span class="login-link" id="linkLogin">Connectez-vous.</span>';
+            }
+
+            // Réattacher l'événement d'écoute après modification du HTML
+            document.getElementById('linkLogin').addEventListener('click', () => {
+                window.location.href = "reconnect.html";
+            });
+        }
+
+        // Redirection vers l'inscription
+        document.getElementById('actionCreate').addEventListener('click', () => {
+            window.location.href = "connect.html";
+        });
+    </script>
+</body>
+</html>

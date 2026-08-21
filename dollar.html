@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Hub Dollar Premium</title>
+    <style>
+        /* ==================== VARIABLE DE THÈMES PERSO (BASÉ SUR LES CLASSES) ==================== */
+        :root, body.dark {
+            --bg-gradient: linear-gradient(135deg, #020a04 0%, #010201 100%);
+            --glow-green: #1db954;
+            --glow-yellow: #ffcc00;
+            --glow-orange: #ff6600;
+            --accent-blue: #92aaff;
+            --card-bg: rgba(13, 22, 16, 0.7);
+            --card-border: rgba(146, 170, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #7e9488;
+            --panel-bg: rgba(0, 0, 0, 0.4);
+            --select-option-bg: #060e0a;
+            --select-option-text: #ffffff;
+            --nav-bg: #040705;
+            --nav-inactive: #4e5e54;
+        }
+
+        body.light {
+            --bg-gradient: linear-gradient(135deg, #f4fcf6 0%, #edf2f0 100%);
+            --glow-green: #1aa34a;
+            --accent-blue: #4a6fa5;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(74, 111, 165, 0.15);
+            --text-main: #121c16;
+            --text-muted: #5a6e63;
+            --panel-bg: rgba(0, 0, 0, 0.04);
+            --select-option-bg: #ffffff;
+            --select-option-text: #121c16;
+            --nav-bg: #ffffff;
+            --nav-inactive: #7fa08c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            padding: 24px 16px 100px 16px;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -20%; right: -20%;
+            width: 400px; height: 400px;
+            background: var(--glow-green);
+            opacity: 0.08;
+            filter: blur(150px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            bottom: -10%; left: -10%;
+            width: 350px; height: 350px;
+            background: var(--accent-blue);
+            opacity: 0.07;
+            filter: blur(130px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            padding: 15px 0 30px 0;
+            position: relative;
+        }
+
+        .dashboard-header p {
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .balance-master {
+            font-size: 52px;
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: -1.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-shadow: 0 0 30px rgba(29, 185, 84, 0.15);
+        }
+
+        .balance-master span {
+            color: var(--accent-blue);
+        }
+
+        .select-with-flag {
+            display: inline-flex;
+            align-items: center;
+            background: var(--panel-bg);
+            border: 1px solid var(--card-border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .flag-img {
+            width: 24px;
+            height: auto;
+            border-radius: 3px;
+            object-fit: cover;
+        }
+
+        .pays-select {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .pays-select option {
+            background: var(--select-option-bg);
+            color: var(--select-option-text);
+        }
+
+        .multiplier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--panel-bg);
+            border: 1px solid var(--card-border);
+            color: var(--accent-blue);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15);
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+
+        .card-header-zone {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analytics-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 100px;
+            padding-top: 10px;
+            border-bottom: 1px solid var(--card-border);
+            gap: 8px;
+        }
+
+        .chart-column {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .chart-bar {
+            width: 100%;
+            max-width: 25px;
+            background: var(--panel-bg);
+            border-radius: 6px 6px 0 0;
+            transition: height 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 0%;
+            position: relative;
+        }
+
+        .chart-bar.filled {
+            background: linear-gradient(180deg, var(--accent-blue) 0%, rgba(29, 185, 84, 0.1) 100%);
+            border-top: 2px solid var(--glow-green);
+        }
+
+        .chart-legends {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: var(--text-muted);
+            padding-top: 8px;
+            font-weight: 600;
+        }
+
+        .chart-legends span {
+            flex: 1;
+            text-align: center;
+            max-width: 25px;
+        }
+
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .currency-grid::-webkit-scrollbar { width: 4px; }
+        .currency-grid::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
+
+        .currency-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--panel-bg);
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 14px;
+        }
+
+        .currency-flag-name { display: flex; align-items: center; gap: 8px; }
+        .currency-flag-img { width: 22px; height: auto; border-radius: 2px; object-fit: cover; }
+        .currency-code { font-size: 12px; font-weight: 700; color: var(--text-main); }
+        .currency-value { font-size: 13px; font-weight: 800; color: var(--glow-yellow); text-align: right; }
+
+        .vault-simulation-box { display: flex; flex-direction: column; gap: 12px; }
+        .progress-bar-container { width: 100%; height: 6px; background: var(--panel-bg); border-radius: 10px; overflow: hidden; margin-top: 4px; }
+        .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--glow-green), var(--accent-blue)); transition: width 0.5s ease; }
+        .vault-inputs { display: flex; gap: 8px; }
+        .vault-input { flex: 1; background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; color: var(--text-main); font-size: 14px; outline: none; }
+        .vault-input::placeholder { color: var(--text-muted); opacity: 0.7; }
+.btn-vault-submit {
+    background: var(--glow-yellow); /* Utilise ton jaune fluo premium en fond */
+    color: #020a04;                /* Texte très sombre pour un contraste parfait */
+    border: none;
+    padding: 0 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.btn-vault-submit:active {
+    opacity: 0.8; /* Petit effet au clic sur mobile */
+}
+
+        .toast-popup {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: var(--select-option-bg); color: var(--text-main); padding: 12px 26px; border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-size: 13px; font-weight: 600; z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--accent-blue);
+        }
+        .toast-popup.show { transform: translateX(-50%) translateY(0); }
+
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 72px;
+            background: var(--nav-bg); display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid var(--card-border); z-index: 100;
+            transition: background 0.3s ease;
+        }
+        .nav-item { text-decoration: none; color: var(--nav-inactive); font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 33.33%; }
+        .nav-item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; }
+        .nav-item.active { color: var(--glow-green); }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('tyti_theme') || 'dark';
+            document.documentElement.classList.add(savedTheme);
+            window.addEventListener('DOMContentLoaded', () => {
+                document.body.classList.add(savedTheme);
+            });
+        })();
+    </script>
+</head>
+<body>
+
+    <div id="toast" class="toast-popup">Chargement sécurisé...</div>
+
+    <div class="dashboard-header">
+        <div class="select-with-flag">
+            <img id="currentFlag" class="flag-img" src="https://flagcdn.com/w40/us.png" alt="Drapeau">
+            <select class="pays-select" id="userCountry">
+                <option value="USD" data-flag="us">USA ($)</option>
+                <option value="EUR" data-flag="fr">France (€)</option>
+                <option value="FC" data-flag="cd">RDC (FC)</option>
+                <option value="CAD" data-flag="ca">Canada (C$)</option>
+            </select>
+        </div>
+
+        <p id="lblAssetTitle">Solde Global d'Actifs</p>
+        <div class="balance-master" id="lblSoldeTotal">0.00 <span>$</span></div>
+        <div class="multiplier-badge"><span id="lblMultBadge">⚡ Multiplicateur Actuel:</span> <span id="lblMult">x1.0</span></div>
+    </div>
+
+    <div class="glass-card">
+        <span class="card-title" id="lblChartTitle">📊 Rapport d'Activité Hebdomadaire (Gains Réels)</span>
+        <div class="analytics-chart">
+            <div class="chart-column"><div class="chart-bar" id="bar-mon"></div></div>
+            <div class="chart-column"><div class="chart-bar" id="bar-tue"></div></div>
+            <div class="chart-column"><div class="chart-bar" id="bar-wed"></div></div>
+            <div class="chart-column"><div class="chart-bar" id="bar-thu"></div></div>
+            <div class="chart-column"><div class="chart-bar" id="bar-fri"></div></div>
+            <div class="chart-column"><div class="chart-bar" id="bar-sat"></div></div>
+            <div class="chart-column"><div class="chart-bar" id="bar-sun"></div></div>
+        </div>
+        <div class="chart-legends">
+            <span id="leg0">Lun</span><span id="leg1">Mar</span><span id="leg2">Mer</span><span id="leg3">Jeu</span><span id="leg4">Ven</span><span id="leg5">Sam</span><span id="leg6" style="color:var(--accent-blue)">Dim</span>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <span class="card-title" id="lblGridTitle">🌐 Taux de Conversion Global Multi-Monnaies</span>
+        <div class="currency-grid" id="currencyGrid"></div>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-header-zone">
+            <span class="card-title"><span id="lblTargetTitle">🎯 Target Épargne</span> (<span id="lblTargetPercent">0%</span>)</span>
+            <span id="lblTargetStatus" style="font-size:12px; font-weight:700; color:var(--accent-blue)">0 / 100$</span>
+        </div>
+        <div class="vault-simulation-box">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="targetProgressFill"></div>
+            </div>
+            <div class="vault-inputs">
+                <input type="number" id="txtTarget" class="vault-input" placeholder="Fixer un nouvel objectif ($)..." inputmode="decimal">
+                <button class="btn-vault-submit" id="btnTargetSubmit">Définir</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <a href="accueil.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.35 21H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 .71-1.53l7-6a2 2 0 0 1 2.58 0l7 6A2 2 0 0 1 21 10v2.35"/><path d="M14.8 12.4A1 1 0 0 0 14 12h-4a1 1 0 0 0-1 1v8"/><path d="M15 18h6"/><path d="M18 15v6"/></svg>
+            <span id="lblNavHome">Accueil</span>
+        </a>
+        <a href="dollar.html" class="nav-item active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-blue);"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            <span id="lblNavDollar">Streak</span>
+        </a>
+        <a href="parametre.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="lblNavMe">Moi</span>
+        </a>
+    </div>
+
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+            authDomain: "tyti-deaee.firebaseapp.com",
+            projectId: "tyti-deaee",
+            storageBucket: "tyti-deaee.firebasestorage.app",
+            messagingSenderId: "668655272910",
+            appId: "1:668655272910:web:296794f893e36784d2619f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
+
+        const dict = {
+            fr: {
+                assetTitle: "Solde Global d'Actifs", multBadge: "⚡ Multiplicateur Actuel:",
+                chartTitle: "📊 Rapport d'Activité Hebdomadaire (Gains Réels)",
+                gridTitle: "🌐 Taux de Conversion Global Multi-Monnaies", targetTitle: "🎯 Target Épargne",
+                placeholder: "Fixer un nouvel objectif ($)...", btnDefine: "Définir",
+                home: "Accueil", streak: "Streak", me: "Moi", loading: "Chargement sécurisé...",
+                errValid: "❌ Spécifie un objectif valide.", successTarget: "🎯 Cible mise à jour avec succès.",
+                errTarget: "Erreur lors de la configuration de la cible.", days: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"]
+            },
+            en: {
+                assetTitle: "Global Asset Balance", multBadge: "⚡ Current Multiplier:",
+                chartTitle: "📊 Weekly Activity Report (Real Earnings)",
+                gridTitle: "🌐 Multi-Currency Global Conversion Rates", targetTitle: "🎯 Savings Target",
+                placeholder: "Set a new target ($)...", btnDefine: "Set",
+                home: "Home", streak: "Streak", me: "Me", loading: "Secure loading...",
+                errValid: "❌ Specify a valid target.", successTarget: "🎯 Target successfully updated.",
+                errTarget: "Error setting up the target.", days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            },
+            ja: {
+                assetTitle: "総資産残高", multBadge: "⚡ 現在의 倍率:",
+                chartTitle: "📊 週次アクティビティレポート（実際の利益）",
+                gridTitle: "🌐 複数通貨 de グローバル変換レート", targetTitle: "🎯 貯蓄ターゲット",
+                placeholder: "新しいターゲットを設定 ($)...", btnDefine: "設定",
+                home: "ホーム", streak: "ストリーク", me: "マイページ", loading: "安全な読み込み中...",
+                errValid: "❌ 有効なターゲットを指定してください。", successTarget: "🎯 ターゲットが正常に更新されました。",
+                errTarget: "ターゲットの設定中にエラーが発生しました。", days: ["日", "月", "火", "水", "木", "金", "土"]
+            }
+        };
+
+        const lang = localStorage.getItem('tyti_lang') || 'fr';
+        const ui = dict[lang] || dict.fr;
+
+        function applyLanguageTraductions() {
+            document.getElementById('lblAssetTitle').innerText = ui.assetTitle;
+            document.getElementById('lblMultBadge').innerText = ui.multBadge;
+            document.getElementById('lblChartTitle').innerText = ui.chartTitle;
+            document.getElementById('lblGridTitle').innerText = ui.gridTitle;
+            document.getElementById('lblTargetTitle').innerText = ui.targetTitle;
+            document.getElementById('txtTarget').placeholder = ui.placeholder;
+            document.getElementById('btnTargetSubmit').innerText = ui.btnDefine;
+            document.getElementById('lblNavHome').innerText = ui.home;
+            document.getElementById('lblNavDollar').innerText = ui.streak;
+            document.getElementById('lblNavMe').innerText = ui.me;
+            document.getElementById('toast').innerText = ui.loading;
+        }
+        applyLanguageTraductions();
+
+        let currentUser = null;
+        let balanceInUSD = 0.00; // Pivot unique : Toujours stocké en USD depuis Firebase
+        let currentMultiplier = 1.0;
+        let savingsTarget = 100.00;
+        let selectedDevise = "USD";
+
+        // Table des taux fixes par rapport à 1 USD
+        const exchangeRatesTable = {
+            CAD: 1.37,
+            "C$": 1.37, // Sécurité si Firebase renvoie "C$"
+            EUR: 0.92,
+            "€": 0.92,  // Sécurité si Firebase renvoie "€"
+            FC: 2800.0,
+            CDF: 2800.0,
+            USD: 1.0,
+            "$": 1.0
+        };
+
+        const currencyData = [
+            { code: "USD", flagCode: "us", rate: 1.0 },
+            { code: "EUR", flagCode: "fr", rate: 0.92 },
+            { code: "CAD", flagCode: "ca", rate: 1.37 },
+            { code: "GBP", flagCode: "gb", rate: 0.79 },
+            { code: "FC", flagCode: "cd", rate: 2800.0 },
+            { code: "ZAF", flagCode: "za", rate: 18.45 },
+            { code: "XAF", flagCode: "cm", rate: 605.5 },
+            { code: "XOF", flagCode: "ci", rate: 605.5 },
+            { code: "JPY", flagCode: "jp", rate: 156.2 },
+            { code: "AUD", flagCode: "au", rate: 1.51 },
+            { code: "CHF", flagCode: "ch", rate: 0.91 },
+            { code: "CNY", flagCode: "cn", rate: 7.24 },
+            { code: "INR", flagCode: "in", rate: 83.3 }
+        ];
+
+        const lblSoldeTotal = document.getElementById('lblSoldeTotal');
+        const lblMult = document.getElementById('lblMult');
+        const toast = document.getElementById('toast');
+        const txtTarget = document.getElementById('txtTarget');
+        const lblTargetPercent = document.getElementById('lblTargetPercent');
+        const lblTargetStatus = document.getElementById('lblTargetStatus');
+        const targetProgressFill = document.getElementById('targetProgressFill');
+        const currencyGrid = document.getElementById('currencyGrid');
+        const userCountrySelect = document.getElementById('userCountry');
+        const currentFlagImg = document.getElementById('currentFlag');
+        const btnTargetSubmit = document.getElementById('btnTargetSubmit');
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        selectedDevise = sessionStorage.getItem('tyti_dollar_page_currency') || "USD";
+        userCountrySelect.value = selectedDevise;
+
+        const initialOption = userCountrySelect.querySelector(`option[value="${selectedDevise}"]`);
+        if(initialOption) {
+            currentFlagImg.src = `https://flagcdn.com/w40/${initialOption.getAttribute('data-flag')}.png`;
+        }
+
+        userCountrySelect.addEventListener('change', (e) => {
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            const flagCode = selectedOption.getAttribute('data-flag');
+            selectedDevise = e.target.value;
+
+            currentFlagImg.src = `https://flagcdn.com/w40/${flagCode}.png`;
+            sessionStorage.setItem('tyti_dollar_page_currency', selectedDevise);
+            localStorage.setItem('user_currency', selectedDevise);
+
+            triggerLocalRender();
+        });
+
+        // --- AJOUT DE LA VÉRIFICATION DE COMPTE ACTIF ---
+        let activeUid = localStorage.getItem('tyti_active_uid');
+
+        onAuthStateChanged(auth, async (user) => {
+            // Interception multi-compte : Si le compte connecté par défaut n'est pas celui choisi par l'utilisateur
+            if (user && activeUid && user.uid !== activeUid) {
+                user = null;
+            }
+
+            if (user) {
+                currentUser = user;
+                activeUid = user.uid;
+                localStorage.setItem('tyti_active_uid', activeUid);
+                await synchronizeHubData();
+            } else {
+                // Section de secours pour charger le compte secondaire actif
+                if (activeUid) {
+                    currentUser = { uid: activeUid };
+                    await synchronizeHubData();
+                } else {
+                    window.location.replace("index.html");
+                }
+            }
+        });
+
+        async function synchronizeHubData() {
+            try {
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+
+                    // 1. DÉTECTION DE LA DEVISE brut
+                    let rawDevise = data.currency || localStorage.getItem('user_currency') || sessionStorage.getItem('tyti_dollar_page_currency') || "USD";
+
+                    // Normalisation : Si Firebase renvoie "C$", on le transforme en "CAD" pour le select, etc.
+                    if (rawDevise === "C$") selectedDevise = "CAD";
+                    else if (rawDevise === "€") selectedDevise = "EUR";
+                    else selectedDevise = rawDevise;
+
+                    // On met à jour le menu déroulant visuel pour qu'il affiche la bonne monnaie
+                    userCountrySelect.value = selectedDevise;
+                    const selectedOption = userCountrySelect.querySelector(`option[value="${selectedDevise}"]`);
+                    if (selectedOption) {
+                        currentFlagImg.src = `https://flagcdn.com/w40/${selectedOption.getAttribute('data-flag')}.png`;
+                    }
+
+                    // 2. On extrait le solde brut réel depuis Firebase (ex: 37)
+                    const soldeBrutFirebase = data.solde !== undefined ? parseFloat(data.solde) : 0.00;
+
+                    // 3. On récupère le taux (utilise rawDevise pour être sûr de matcher "C$" ou "CAD")
+                    const currentDeviseRate = exchangeRatesTable[rawDevise] || exchangeRatesTable[selectedDevise] || 1.0;
+
+                    // 4. CONVERSION PIVOT : 37 / 1.37 = 27.00 USD (Le compte est maintenant bon !)
+                    balanceInUSD = soldeBrutFirebase / currentDeviseRate;
+
+                    currentMultiplier = data.multiplier !== undefined ? parseFloat(data.multiplier) : 1.0;
+                    savingsTarget = data.savings_target !== undefined ? parseFloat(data.savings_target) : 100.00;
+
+                    console.log(`[FIREBASE] Devise détectée : ${rawDevise} -> Normalisée en : ${selectedDevise}`);
+                    console.log(`[FIREBASE] Solde brut extrait : ${soldeBrutFirebase} ${rawDevise}`);
+                    console.log(`[FIREBASE] Variable pivot 'balanceInUSD' calculée : ${balanceInUSD.toFixed(2)} USD`);
+
+                    updateHubUI(data);
+                }
+            } catch (err) {
+                console.error("Erreur synchronisation globale.", err);
+            }
+        }
+
+        function triggerLocalRender() {
+            let symbole = "$";
+            if (selectedDevise === "FC") symbole = "FC";
+            else if (selectedDevise === "EUR") symbole = "€";
+            else if (selectedDevise === "CAD") symbole = "C$";
+
+            // CORRECTION PRINCIPALE : On prend la base USD et on la convertit selon la devise sélectionnée
+            const currentRate = exchangeRatesTable[selectedDevise] || 1.0;
+            const convertedDisplayBalance = balanceInUSD * currentRate;
+
+            lblSoldeTotal.innerHTML = `${convertedDisplayBalance.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span>${symbole}</span>`;
+
+            renderCurrencyGrid();
+        }
+
+        function renderCurrencyGrid() {
+            // On vide la grille existante
+            currencyGrid.innerHTML = "";
+
+            // LOG DE CONTRÔLE (Tu verras enfin les vrais chiffres ici)
+            console.log(`[DEBUG GRILLE] Vrai Pivot utilisé : ${balanceInUSD.toFixed(2)} USD`);
+
+            // CALCUL DU RESTE DES DEVISES
+            currencyData.forEach(coin => {
+                // Formule directe : Vrais Dollars * Taux de la ligne
+                // Exemple pour le FC : 1.89 USD * 2800 = 5300 FC (Le compte est bon !)
+                const convertedValue = balanceInUSD * coin.rate;
+
+                let symboleAffiche = coin.code;
+                if (coin.code === "USD") symboleAffiche = "$";
+                else if (coin.code === "EUR") symboleAffiche = "€";
+                else if (coin.code === "FC") symboleAffiche = "FC";
+                else if (coin.code === "CAD") symboleAffiche = "C$";
+
+                const card = document.createElement('div');
+                card.className = "currency-item";
+                card.innerHTML = `
+                    <div class="currency-flag-name">
+                        <img class="currency-flag-img" src="https://flagcdn.com/w40/${coin.flagCode}.png" alt="${coin.code}">
+                        <span class="currency-code">${coin.code}</span>
+                    </div>
+                    <div class="currency-value">
+                        ${convertedValue.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${symboleAffiche}
+                    </div>
+                `;
+                currencyGrid.appendChild(card);
+            });
+        }
+
+        function updateHubUI(firebaseData = {}) {
+            triggerLocalRender();
+
+            lblMult.textContent = `x${currentMultiplier.toFixed(1)}`;
+
+            const historicalData = firebaseData.historiqueGains || {};
+            const barIds = ['bar-mon', 'bar-tue', 'bar-wed', 'bar-thu', 'bar-fri', 'bar-sat', 'bar-sun'];
+
+            const currentDay = new Date();
+            const dayOfWeek = currentDay.getDay();
+            const distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            const mondayDate = new Date(currentDay);
+            mondayDate.setDate(currentDay.getDate() + distanceToMonday);
+
+            let maxGainDeLaSemaine = 1;
+            barIds.forEach((id, index) => {
+                const barDate = new Date(mondayDate);
+                barDate.setDate(mondayDate.getDate() + index);
+                const dateString = `${barDate.getFullYear()}-${String(barDate.getMonth() + 1).padStart(2, '0')}-${String(barDate.getDate()).padStart(2, '0')}`;
+                const gain = historicalData[dateString] || 0;
+                if (gain > maxGainDeLaSemaine) maxGainDeLaSemaine = gain;
+            });
+
+            barIds.forEach((id, index) => {
+                const barDate = new Date(mondayDate);
+                barDate.setDate(mondayDate.getDate() + index);
+                const dateString = `${barDate.getFullYear()}-${String(barDate.getMonth() + 1).padStart(2, '0')}-${String(barDate.getDate()).padStart(2, '0')}`;
+
+                const gainDuJour = historicalData[dateString] || 0;
+                const bar = document.getElementById(id);
+                const legend = document.getElementById(`leg${index}`);
+
+                if(legend) {
+                    legend.innerText = ui.days[barDate.getDay()];
+                }
+
+                if (bar) {
+                    if (gainDuJour > 0) {
+                        let calculatedHeight = (gainDuJour / maxGainDeLaSemaine) * 100;
+                        bar.style.height = `${Math.max(calculatedHeight, 15)}%`;
+                        bar.classList.add('filled');
+                    } else {
+                        bar.style.height = "0%";
+                        bar.classList.remove('filled');
+                    }
+                }
+            });
+
+            // Target basée sur l'USD unique
+            let percent = Math.min((balanceInUSD / savingsTarget) * 100, 100);
+            lblTargetPercent.textContent = `${Math.round(percent)}%`;
+            lblTargetStatus.textContent = `${balanceInUSD.toFixed(0)} / ${savingsTarget.toFixed(0)}$`;
+            targetProgressFill.style.width = `${percent}%`;
+        }
+
+        btnTargetSubmit.addEventListener('click', async () => {
+            const inputVal = parseFloat(txtTarget.value);
+            if (isNaN(inputVal) || inputVal <= 0) {
+                showToast(ui.errValid);
+                return;
+            }
+            savingsTarget = inputVal;
+            txtTarget.value = '';
+
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), { savings_target: savingsTarget });
+                showToast(ui.successTarget);
+                await synchronizeHubData();
+            } catch (e) {
+                showToast(ui.errTarget);
+            }
+        });
+    </script>
+</body>
+</html>

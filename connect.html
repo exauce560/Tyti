@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Créer un compte</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --accent-green: #8AFF63;
+            --gray-light: #9b9d9b;
+            --gray-input: #e2e8f0;
+            --text-color: #0f172a;
+            --text-secondary: #64748b;
+            --radius-main: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .phone-container {
+            width: 100%;
+            height: 100vh;
+            padding: 30px 24px 40px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* En-tête */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 20px;
+        }
+
+        .btn-back {
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px;
+        }
+
+        /* Progression */
+        .status-progress-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            margin: 20px 0 40px 0;
+        }
+
+        .status-svg-1 { color: var(--gray-light); transition: color 0.3s; }
+        .status-svg-2 { color: var(--accent-green); }
+
+        .animated-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--gray-light);
+            border-radius: 50%;
+            animation: waveAdvance 1.6s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.15s; }
+        .dot:nth-child(3) { animation-delay: 0.3s; }
+        .dot:nth-child(4) { animation-delay: 0.45s; }
+        .dot:nth-child(5) { animation-delay: 0.6s; }
+
+        @keyframes waveAdvance {
+            0%, 60%, 100% { transform: scale(0.7); opacity: 0.3; background-color: var(--gray-light); }
+            30% { transform: scale(1.4); opacity: 1; background-color: var(--accent-green); }
+        }
+
+        /* Formulaire */
+        .form-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 38px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: black;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 4px 8px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1.5px solid var(--gray-input);
+            font-size: 16px;
+            color: var(--text-color);
+            font-weight: 500;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .input-field:focus {
+            border-bottom-color: var(--text-color);
+            border-right: 2px solid var(--text-color);
+            padding-right: 8px;
+            border-bottom-right-radius: 4px;
+        }
+
+        select.input-field {
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .select-country-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .select-country-wrapper select.input-field {
+            padding-left: 35px;
+        }
+
+        .flag-img {
+            position: absolute;
+            left: 2px;
+            bottom: 11px;
+            width: 24px;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            pointer-events: none;
+            display: none;
+            z-index: 2;
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 8px;
+            bottom: 12px;
+            width: 14px;
+            height: 14px;
+            color: var(--accent-green);
+            pointer-events: none;
+        }
+
+        /* Grand Bouton Google */
+        .bottom-action-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-next {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            height: 54px;
+            background-color: #f8fafc;
+            color: #94a3b8;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-main);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: not-allowed;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn-next.active {
+            background-color: #ffffff;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-next.active:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .google-icon {
+            width: 22px;
+            height: 22px;
+        }
+
+        .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #4285F4;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-next.loading .btn-content {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .btn-next.loading .spinner {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <div class="header-nav">
+            <button class="btn-back" id="backBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+        </div>
+
+        <div class="status-progress-container">
+            <svg class="status-svg-1" xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+
+            <div class="animated-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <svg class="status-svg-2" xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 11 2 2 4-4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+
+        <form class="form-container" id="registerForm" onsubmit="return false;">
+            <div class="input-group">
+                <label for="fieldName" data-i18n="name">Nom</label>
+                <input type="text" id="fieldName" placeholder="Votre nom complet" data-i18n="name_placeholder" class="input-field" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="fieldDate" data-i18n="birth">Date de naissance</label>
+                <input type="date" id="fieldDate" class="input-field">
+            </div>
+
+            <div class="input-group">
+                <label for="fieldGender" data-i18n="gender">Sexe</label>
+                <select id="fieldGender" class="input-field">
+                    <option value="" disabled selected hidden id="optGenderDefault">Sélectionner votre sexe</option>
+                    <option value="Masculin" id="optGenderM">Masculin👨</option>
+                    <option value="Féminin" id="optGenderF">Féminin👩‍🦰</option>
+                    <option value="Autre" id="optGenderO">Autre👤</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+
+            <div class="input-group">
+                <label for="fieldOrigin" data-i18n="country">Origine (Pays)</label>
+                <div class="select-country-wrapper">
+                    <img id="currentFlag" class="flag-img" src="" alt="Drapeau">
+
+                    <select id="fieldOrigin" class="input-field">
+                        <option value="" disabled selected hidden id="optCountryDefault">Sélectionner votre pays</option>
+                        <option value="USA" data-flag="us">Amérique (USD - $)</option>
+                        <option value="RDC" data-flag="cd">RDC (CDF - FC)</option>
+                        <option value="France" data-flag="fr">France (EUR - €)</option>
+                        <option value="Canada" data-flag="ca">Canada (CAD - $)</option>
+                    </select>
+                    <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+            </div>
+        </form>
+
+        <div class="bottom-action-container">
+            <button class="btn-next" id="submitBtn" disabled>
+                <div class="btn-content">
+                    <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1c-4.3 0-7.94 2.47-9.64 6.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span data-i18n="btn_google">S'inscrire avec Google</span>
+                </div>
+                <div class="spinner"></div>
+            </button>
+        </div>
+
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+            authDomain: "tyti-deaee.firebaseapp.com",
+            projectId: "tyti-deaee",
+            storageBucket: "tyti-deaee.firebasestorage.app",
+            messagingSenderId: "668655272910",
+            appId: "1:668655272910:web:296794f893e36784d2619f",
+            measurementId: "G-CRLKTT8R27"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const fieldName = document.getElementById('fieldName');
+        const fieldDate = document.getElementById('fieldDate');
+        const fieldGender = document.getElementById('fieldGender');
+        const fieldOrigin = document.getElementById('fieldOrigin');
+        const currentFlag = document.getElementById('currentFlag');
+        const submitBtn = document.getElementById('submitBtn');
+        const toast = document.getElementById('toast');
+
+        // Initialisation des messages de traduction avec la nouvelle clé
+        let localTranslations = {
+            errorNameMsg: "Pas de chiffres ou de caractères spéciaux !",
+            errorCloudMsg: "Erreur d'enregistrement dans le Cloud.",
+            errorAuthMsg: "Connexion annulée ou impossible.",
+            alreadyExistsMsg: "Cet email est déjà actif sur Tyti. Redirection..."
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const currentLang = localStorage.getItem('tyti_lang') || 'fr';
+
+            fetch('lang.json')
+                .then(response => {
+                    if (!response.ok) throw new Error("Erreur i18n");
+                    return response.json();
+                })
+                .then(translations => {
+                    const langData = translations[currentLang];
+                    if (!langData) return;
+
+                    document.querySelectorAll('[data-i18n]').forEach(element => {
+                        const key = element.getAttribute('data-i18n');
+                        if (langData[key]) {
+                            if (element.id === "fieldName") {
+                                element.placeholder = langData[key];
+                            } else {
+                                element.textContent = langData[key];
+                            }
+                        }
+                    });
+
+                    if(currentLang === 'en') {
+                        document.getElementById('optGenderDefault').textContent = "Select your gender";
+                        document.getElementById('optGenderM').textContent = "Male👨";
+                        document.getElementById('optGenderF').textContent = "Female👩‍🦰";
+                        document.getElementById('optGenderO').textContent = "Other👤";
+                        document.getElementById('optCountryDefault').textContent = "Select your country";
+
+                        localTranslations.errorNameMsg = "No numbers or special characters allowed!";
+                        localTranslations.errorCloudMsg = "Cloud storage sync error.";
+                        localTranslations.errorAuthMsg = "Login canceled or failed.";
+                        localTranslations.alreadyExistsMsg = "This email is already active on Tyti. Redirecting...";
+                    } else if (currentLang === 'ja') {
+                        document.getElementById('optGenderDefault').textContent = "性別を選択してください";
+                        document.getElementById('optGenderM').textContent = "男性👨";
+                        document.getElementById('optGenderF').textContent = "女性👩‍🦰";
+                        document.getElementById('optGenderO').textContent = "その他👤";
+                        document.getElementById('optCountryDefault').textContent = "国を選択してください";
+
+                        localTranslations.errorNameMsg = "数字や特殊文字は使用できません！";
+                        localTranslations.errorCloudMsg = "クラウドへの保存に失敗しました。";
+                        localTranslations.errorAuthMsg = "認証がキャンセルされたか、失敗しました。";
+                        localTranslations.alreadyExistsMsg = "このメールアドレスは既にTytiで登録されています。移行中...";
+                    }
+                })
+                .catch(error => console.error("Erreur de traduction:", error));
+        });
+
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = "welc.html";
+        });
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        fieldOrigin.addEventListener('change', () => {
+            const selectedOption = fieldOrigin.options[fieldOrigin.selectedIndex];
+            const flagCode = selectedOption.getAttribute('data-flag');
+            if (flagCode) {
+                currentFlag.src = `https://flagcdn.com/w40/${flagCode}.png`;
+                currentFlag.style.display = 'block';
+            } else {
+                currentFlag.style.display = 'none';
+            }
+            checkFormValidity();
+        });
+
+        function checkFormValidity() {
+            const nameVal = fieldName.value.trim();
+            const dateVal = fieldDate.value;
+            const genderVal = fieldGender.value;
+            const originVal = fieldOrigin.value;
+
+            const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]+$/;
+
+            let isNameValid = false;
+            if (nameVal.length > 0) {
+                if (!nameRegex.test(nameVal)) {
+                    showToast(localTranslations.errorNameMsg);
+                    fieldName.value = nameVal.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, '');
+                } else if (nameVal.length >= 2) {
+                    isNameValid = true;
+                }
+            }
+
+            if (isNameValid && dateVal !== "" && genderVal !== "" && originVal !== "") {
+                submitBtn.removeAttribute('disabled');
+                submitBtn.classList.add('active');
+            } else {
+                submitBtn.setAttribute('disabled', 'true');
+                submitBtn.classList.remove('active');
+            }
+        }
+
+        fieldName.addEventListener('input', checkFormValidity);
+        fieldDate.addEventListener('change', checkFormValidity);
+        fieldGender.addEventListener('change', checkFormValidity);
+
+        submitBtn.addEventListener('click', () => {
+            if (!submitBtn.classList.contains('active') || submitBtn.classList.contains('loading')) return;
+
+            submitBtn.classList.add('loading');
+
+            const provider = new firebase.auth.GoogleAuthProvider();
+
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    const user = result.user;
+
+                    // --- VÉRIFICATION DE L'EXISTENCE DU COMPTE DANS FIRESTORE ---
+                    db.collection("users").doc(user.uid).get()
+                        .then((docSnap) => {
+                            if (docSnap.exists) {
+                                // L'utilisateur existe déjà, on l'oriente vers la reconnexion
+                                showToast(localTranslations.alreadyExistsMsg);
+                                setTimeout(() => {
+                                    window.location.href = "reconnect.html";
+                                }, 2500);
+                            } else {
+                                // Nouveau compte : on procède à l'enregistrement initial
+                                const userProfile = {
+                                    uid: user.uid,
+                                    email: user.email,
+                                    name: fieldName.value.trim(),
+                                    birthDate: fieldDate.value,
+                                    gender: fieldGender.value,
+                                    origin: fieldOrigin.value,
+                                    registeredAt: new Date().toISOString()
+                                };
+
+                                db.collection("users").doc(user.uid).set(userProfile)
+                                    .then(() => {
+                                        localStorage.setItem('tyti_user_profile', JSON.stringify(userProfile));
+                                        localStorage.setItem('tyti_connecte', 'true');
+                                        window.location.href = "profil.html";
+                                    })
+                                    .catch((error) => {
+                                        console.error("Erreur Firestore :", error);
+                                        showToast(localTranslations.errorCloudMsg);
+                                        submitBtn.classList.remove('loading');
+                                    });
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Erreur de vérification Firestore :", error);
+                            showToast(localTranslations.errorCloudMsg);
+                            submitBtn.classList.remove('loading');
+                        });
+                })
+                .catch((error) => {
+                    console.error("Erreur d'authentification Popup :", error);
+                    showToast(localTranslations.errorAuthMsg);
+                    submitBtn.classList.remove('loading');
+                });
+        });
+    </script>
+</body>
+</html>

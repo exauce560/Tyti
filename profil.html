@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Photo de profil</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --accent-green: #00ff66; /* Vert premium, électrique et profond */
+            --accent-red: #ff3366; /* Rouge pro et punchy */
+            --gray-text: #94a3b8;
+            --gray-border: #1e293b;
+            --radius-main: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            /* FOND AJUSTÉ : Uniquement Vert Électrique et Noir Profond */
+            background: linear-gradient(135deg, #000000 30%, #051a0b 70%, #000000 100%),
+                        radial-gradient(circle at 50% 50%, rgba(0, 255, 102, 0.12) 0%, transparent 60%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .phone-container {
+            width: 100%;
+            height: 100vh;
+            padding: 30px 24px 40px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* En-tête */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 20px;
+        }
+
+        .btn-back {
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px;
+            transition: transform 0.2s;
+        }
+
+        .btn-back:active {
+            transform: scale(0.9);
+        }
+
+        /* Conteneur principal */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            text-align: center;
+        }
+
+        .app-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        /* Zone de clic du Grand Rond */
+        .avatar-picker-zone {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            border: 2px dashed #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+            background: radial-gradient(circle, #020617 0%, #000000 100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .avatar-picker-zone:hover {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 25px rgba(0, 255, 102, 0.2);
+        }
+
+        .avatar-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .lucide-user-icon {
+            color: var(--gray-text);
+            width: 64px;
+            height: 64px;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-picker-zone:hover .lucide-user-icon {
+            color: var(--accent-green);
+            transform: scale(1.05);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Instructions */
+        .instructions-text {
+            font-size: 13.5px;
+            color: var(--gray-text);
+            max-width: 270px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* Statut de Validation & Ligne courbe montante */
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .status-badge {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--accent-red);
+            transition: color 0.3s ease;
+        }
+
+        .status-badge.validated {
+            color: var(--accent-green);
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+        }
+
+        /* La fameuse ligne pro montante stylisée en SVG */
+        .status-line-svg {
+            width: 110px;
+            height: 8px;
+            stroke: var(--accent-red);
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            transition: all 0.4s ease;
+            filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.5));
+        }
+
+        .status-container.validated .status-line-svg {
+            stroke: var(--accent-green);
+            filter: drop-shadow(0px 0px 4px rgba(0, 255, 102, 0.4));
+        }
+
+        /* Zone du bouton en bas à droite */
+        .bottom-action-container {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+        }
+
+        .btn-submit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            height: 46px;
+            background-color: #050c14;
+            color: #475569;
+            border: 1px solid #1e293b;
+            border-radius: 23px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: not-allowed;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        /* Style actif haut de gamme */
+        .btn-submit.active {
+            background-color: var(--accent-green);
+            color: #000000;
+            border-color: var(--accent-green);
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 255, 102, 0.25);
+        }
+
+        .btn-submit.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 255, 102, 0.4);
+        }
+
+        .btn-submit.active:active {
+            transform: translateY(0);
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #000000;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-submit.loading .btn-text {
+            display: none;
+        }
+
+        .btn-submit.loading .spinner {
+            display: block;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: #050c14;
+            border: 1px solid #1e293b;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <div class="header-nav">
+            <button class="btn-back" id="backBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+        </div>
+
+        <div class="main-content">
+            <h1 class="app-title">Tyti</h1>
+
+            <div class="avatar-picker-zone" id="avatarZone">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user" id="avatarSvg">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <img src="" alt="Aperçu" class="avatar-preview" id="avatarPreview">
+            </div>
+
+            <input type="file" id="fileInput" accept="image/*">
+
+            <p class="instructions-text" id="instructionsText">Pour avoir une identity complète, cliquez sur le dessin pour choisir une photo dans votre album.</p>
+
+            <div class="status-container" id="statusContainer">
+                <div class="status-badge" id="statusBadge">Non validé</div>
+                <svg class="status-line-svg" viewBox="0 0 100 10">
+                    <path d="M 5,6 Q 45,6 70,4 T 95,2" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="bottom-action-container">
+            <button class="btn-submit" id="submitBtn" disabled>
+                <span class="btn-text" id="btnText">Continuer</span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+            authDomain: "tyti-deaee.firebaseapp.com",
+            projectId: "tyti-deaee",
+            storageBucket: "tyti-deaee.firebasestorage.app",
+            messagingSenderId: "668655272910",
+            appId: "1:668655272910:web:296794f893e36784d2619f",
+            measurementId: "G-CRLKTT8R27"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const avatarZone = document.getElementById('avatarZone');
+        const fileInput = document.getElementById('fileInput');
+        const avatarSvg = document.getElementById('avatarSvg');
+        const avatarPreview = document.getElementById('avatarPreview');
+        const statusContainer = document.getElementById('statusContainer');
+        const statusBadge = document.getElementById('statusBadge');
+        const submitBtn = document.getElementById('submitBtn');
+        const toast = document.getElementById('toast');
+
+        let compressedBase64Image = null;
+        let currentUserUid = null;
+
+        // Dictionnaires de traduction
+        let uiTranslations = {
+            invalidImage: "Veuillez choisir un fichier image valide.",
+            uploadError: "Échec de l'enregistrement de l'image.",
+            notValidated: "Non validé",
+            validated: "Validé"
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const currentLang = localStorage.getItem('tyti_lang') || 'fr';
+
+            if (currentLang === 'en') {
+                document.getElementById('instructionsText').textContent = "To complete your identity, tap on the icon to select a photo from your album.";
+                document.getElementById('statusBadge').textContent = "Not verified";
+                document.getElementById('btnText').textContent = "Continue";
+                uiTranslations.invalidImage = "Please choose a valid image file.";
+                uiTranslations.uploadError = "Failed to save the image.";
+                uiTranslations.notValidated = "Not verified";
+                uiTranslations.validated = "Verified";
+            } else if (currentLang === 'ja') {
+                document.getElementById('instructionsText').textContent = "身元確認を完了するには、アイコンをタップしてアルバムから写真を選択してください。";
+                document.getElementById('statusBadge').textContent = "未確認";
+                document.getElementById('btnText').textContent = "次へ";
+                uiTranslations.invalidImage = "有効な画像ファイルを選択してください。";
+                uiTranslations.uploadError = "画像の保存に失敗しました。";
+                uiTranslations.notValidated = "未確認";
+                uiTranslations.validated = "確認済み";
+            }
+        });
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUserUid = user.uid;
+            } else {
+                window.location.href = "connect.html";
+            }
+        });
+
+        avatarZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast(uiTranslations.invalidImage);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 400;
+                    const MAX_HEIGHT = 400;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    compressedBase64Image = canvas.toDataURL('image/jpeg', 0.7);
+
+                    avatarSvg.style.display = 'none';
+                    avatarPreview.src = compressedBase64Image;
+                    avatarPreview.style.display = 'block';
+
+                    statusBadge.textContent = uiTranslations.validated;
+                    statusBadge.classList.add('validated');
+                    statusContainer.classList.add('validated');
+
+                    submitBtn.removeAttribute('disabled');
+                    submitBtn.classList.add('active');
+                };
+            };
+        });
+
+        submitBtn.addEventListener('click', () => {
+            if (!submitBtn.classList.contains('active') || submitBtn.classList.contains('loading') || !currentUserUid) return;
+
+            submitBtn.classList.add('loading');
+
+            db.collection("users").doc(currentUserUid).update({
+                avatar: compressedBase64Image,
+                avatarUpdatedAt: new Date().toISOString()
+            })
+            .then(() => {
+                window.location.href = "password.html";
+            })
+            .catch((error) => {
+                console.error("Erreur Firestore :", error);
+                showToast(uiTranslations.uploadError);
+                submitBtn.classList.remove('loading');
+            });
+        });
+
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = "connect.html";
+        });
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

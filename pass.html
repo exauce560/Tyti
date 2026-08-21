@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tark - Connexion PIN</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0d1117; /* Fond sombre Tark */
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Conteneur du Logo SVG avec fond blanc */
+        .logo-wrapper {
+            width: 90px;
+            height: 90px;
+            background-color: #ffffff;
+            border-radius: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
+            margin-bottom: 32px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .logo-wrapper svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        p.instruction {
+            color: #8b949e;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        /* Zone centrale dynamique (contient soit les inputs, soit le loader) */
+        .interactive-zone {
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        /* Zone de saisie des 4 carrés */
+        .pin-wrapper {
+            display: flex;
+            gap: 16px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .pin-wrapper.hide {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+
+        .pin-input {
+            width: 64px;
+            height: 64px;
+            background-color: #161b22;
+            border: 2px solid #30363d;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        /* Couleurs dynamiques Tark au focus sur chaque carré */
+        .pin-input:nth-child(1):focus { border-color: #58a6ff; box-shadow: 0 0 12px rgba(88, 166, 255, 0.3); } /* Bleu */
+        .pin-input:nth-child(2):focus { border-color: #f78166; box-shadow: 0 0 12px rgba(247, 129, 102, 0.3); } /* Orange */
+        .pin-input:nth-child(3):focus { border-color: #f2cc60; box-shadow: 0 0 12px rgba(242, 204, 96, 0.3); }  /* Jaune */
+        .pin-input:nth-child(4):focus { border-color: #58a6ff; box-shadow: 0 0 12px rgba(88, 166, 255, 0.3); } /* Bleu */
+
+        /* Cercle de connexion animé (Loader Orange, Jaune, Bleu) */
+        .connection-loader {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            /* Dégradé conique reprenant l'écosystème Tark */
+            background: conic-gradient(#f78166, #f2cc60, #58a6ff, #f78166);
+            -webkit-mask: radial-gradient(farthest-side, transparent 75%, #000 76%);
+            mask: radial-gradient(farthest-side, transparent 75%, #000 76%);
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+        }
+
+        .connection-loader.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Message d'erreur */
+        .error-message {
+            color: #ff7b72;
+            font-size: 14px;
+            min-height: 20px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo-wrapper">
+            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1024 1024" xml:space="preserve">
+                <path fill="#000000" opacity="1.000000" stroke="none" d="M793.336853,534.184082 C779.972412,605.577332 766.631104,676.539490 753.329712,747.509033 C746.065918,786.265137 738.863770,825.032898 731.651855,863.798645 C730.890930,867.888672 730.259094,872.002563 729.552185,876.102844 C729.137451,878.508667 729.344116,881.293640 725.963440,881.889465 C722.392334,882.518860 719.253845,883.356323 715.987305,879.948425 C702.612732,865.994568 688.802063,852.460083 675.259094,838.665955 C629.606995,792.167236 583.315002,746.312561 536.684692,700.797729 C526.548218,690.903870 516.368896,681.053894 506.193756,671.199768 C505.255615,670.291260 504.204163,669.499634 502.695892,668.222290 C493.526917,676.576904 484.480255,684.875732 475.373352,693.107971 C443.120056,722.263550 410.822937,751.370789 378.588684,780.547424 C358.824982,798.436279 339.134308,816.405945 319.431763,834.362244 C301.206909,850.971924 283.002014,867.603516 264.812653,884.252075 C263.014130,885.898315 261.266083,887.510864 258.696686,885.951294 C255.892792,884.249451 252.026703,884.109009 251.531830,879.357117 C249.446198,859.330505 247.081741,839.332336 244.742706,819.332764 C241.205032,789.084534 237.605774,758.843445 234.028458,728.599792 C230.920776,702.326904 227.822952,676.052734 224.691574,649.782654 C221.855331,625.988464 218.944702,602.203125 216.130646,578.406311 C212.926285,551.309082 209.824783,524.199585 206.618179,497.102570 C203.939514,474.466888 201.145844,451.844818 198.454178,429.210663 C195.526886,404.595123 192.680664,379.969940 189.758560,355.353790 C186.561890,328.424744 183.269974,301.506927 180.109680,274.573669 C176.891724,247.148880 173.849289,219.703445 170.606644,192.281662 C167.929932,169.645752 165.412262,146.981110 162.087067,124.437935 C161.104095,117.773811 163.843933,114.112305 168.161484,110.424156 C170.648010,108.300110 172.938858,109.921654 175.152496,110.799110 C200.394852,120.804810 225.656433,130.764389 250.824448,140.954712 C304.861237,162.833771 358.863037,184.799606 412.845886,206.811523 C444.466675,219.705139 476.041046,232.713318 507.585754,245.791901 C511.358215,247.355988 514.573975,247.497421 518.501038,245.920670 C604.754089,211.288666 691.008972,176.659454 777.635193,142.966034 C805.271606,132.216827 832.885437,121.409798 860.525635,110.670433 C862.731628,109.813278 865.226013,107.879837 867.283752,110.709831 C869.469666,113.716103 873.627075,115.257492 872.557007,120.585800 C863.746155,164.458084 855.111572,208.366699 846.646301,252.307190 C839.721924,288.249176 833.127686,324.254669 826.343323,360.223785 C815.985107,415.141174 805.591675,470.051971 795.202271,524.963440 C794.645813,527.904175 793.987488,530.825562 793.336853,534.184082 Z M543.427979,279.179871 C534.508911,275.467010 525.561218,271.820679 516.688538,268.000153 C514.072021,266.873474 511.749542,266.705658 509.042786,267.795959 C479.075592,279.866913 449.045288,291.781372 419.080963,303.859497 C356.673859,329.014709 294.286957,354.220154 231.931320,379.502655 C228.479080,380.902405 224.687881,381.769196 221.736588,384.097137 C222.069519,385.860291 223.246735,386.596191 224.231934,387.464111 C264.115906,422.600647 303.761536,458.002777 342.731232,494.153687 C394.893799,542.543213 447.081116,590.907227 498.120483,640.489624 C503.191925,645.416382 503.201263,645.447144 508.452209,640.700073 C524.024353,626.622131 539.532288,612.472778 555.152039,598.447876 C592.962097,564.498474 630.761963,530.537292 668.678284,496.706696 C702.990051,466.092194 737.451904,435.645782 771.844482,405.121796 C779.649780,398.194427 787.442322,391.252899 796.076599,383.574585 C711.511536,348.619537 627.831299,314.030243 543.427979,279.179871 Z M470.441772,674.937805 C477.092224,668.940247 483.742706,662.942688 490.890564,656.496582 C399.646881,568.608276 307.377045,482.685394 212.727005,399.343262 C212.316559,399.626617 211.906113,399.910004 211.495667,400.193359 C229.679871,553.145935 247.864075,706.098450 266.206909,860.385315 C334.831177,798.079163 402.378448,736.750854 470.441772,674.937805 Z M754.736694,442.242157 C734.121765,460.661224 713.501526,479.074402 692.893250,497.500885 C665.705017,521.810669 638.507812,546.110352 611.348694,570.452576 C585.926758,593.237732 560.508606,616.027344 535.180847,638.916870 C528.667725,644.802917 521.786865,650.323181 515.489807,657.339844 C583.423584,722.853027 649.796875,789.619019 716.893433,857.300293 C745.496521,704.811279 773.840576,553.702759 802.184692,402.594299 C801.641663,402.385956 801.098633,402.177643 800.555603,401.969330 C785.457031,415.234680 770.358521,428.500031 754.736694,442.242157 Z M313.128387,184.453201 C269.024689,166.644882 224.920990,148.836563 179.564056,130.522217 C189.147278,211.246643 198.575485,290.665283 208.080292,370.729279 C302.293610,332.770569 395.579468,295.185516 488.865326,257.600494 C488.884064,257.149109 488.902802,256.697723 488.921539,256.246368 C430.556458,232.418106 372.191345,208.589844 313.128387,184.453201 Z M700.748962,191.332886 C645.935120,213.160858 591.121277,234.988831 535.054688,257.315643 C626.782349,295.247375 717.151917,332.617523 808.287354,370.304352 C823.447266,290.456451 838.417358,211.608200 853.387451,132.759933 C852.895752,132.434647 852.404114,132.109360 851.912476,131.784073 C801.770325,151.558426 751.628113,171.332779 700.748962,191.332886 Z" />
+            </svg>
+        </div>
+
+        <h2>Saisissez votre code PIN</h2>
+        <p class="instruction">Entrez votre code à 4 chiffres pour accéder à l'application.</p>
+
+        <div class="interactive-zone">
+            <div class="pin-wrapper" id="pinWrapper">
+                <input type="text" class="pin-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+                <input type="text" class="pin-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+                <input type="text" class="pin-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+                <input type="text" class="pin-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            </div>
+
+            <div class="connection-loader" id="loader"></div>
+        </div>
+
+        <div class="error-message" id="errorMessage">Code PIN incorrect. Veuillez réessayer.</div>
+    </div>
+
+<script>
+    const inputs = document.querySelectorAll('.pin-input');
+    const pinWrapper = document.getElementById('pinWrapper');
+    const loader = document.getElementById('loader');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Force le focus initial
+    inputs[0].focus();
+
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+
+            if (e.target.value.length === 1) {
+                errorMessage.classList.remove('show');
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                } else {
+                    // Le code est complet, on lance l'effet de connexion
+                    startConnectionProcess();
+                }
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === "Backspace" && input.value.length === 0 && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+    });
+
+    function startConnectionProcess() {
+        // Masque les 4 carrés et affiche le cercle animé Tark
+        pinWrapper.classList.add('hide');
+        loader.classList.add('show');
+
+        // Récupère le code saisi
+        let enteredPin = "";
+        inputs.forEach(input => enteredPin += input.value);
+
+        // Simulation d'un temps de connexion (1.5 seconde) pour apprécier l'animation
+        setTimeout(() => {
+            // --- MODIFICATION MULTI-COMPTE : RÉCUPÉRATION DU PIN DU COMPTE SELECTIONNÉ ---
+            const activeUid = localStorage.getItem('tyti_active_uid');
+
+            // On cherche la clé du PIN associée à cet UID précis (ex: tyti_app_pin_MON_UID)
+            // Si elle n'existe pas, on prend le PIN par défaut par sécurité
+            const pinKey = activeUid ? `tyti_app_pin_${activeUid}` : 'tyti_app_pin';
+            const savedPin = localStorage.getItem(pinKey) || localStorage.getItem('tyti_app_pin');
+
+            if (enteredPin === savedPin) {
+                localStorage.setItem('tyti_connecte', 'true');
+                window.location.href = 'accueil.html';
+            } else {
+                // Si erreur : On masque le loader, réaffiche la grille, et secoue
+                loader.classList.remove('show');
+                pinWrapper.classList.remove('hide');
+                errorMessage.classList.add('show');
+
+                // Reset des inputs
+                inputs.forEach(input => input.value = "");
+                inputs[0].focus();
+            }
+        }, 1500);
+    }
+</script>
+</body>
+</html>

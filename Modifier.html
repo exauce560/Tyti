@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tyti - Mon Profil</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #020a04 0%, #010201 100%);
+            --glow-green: #1db954;
+            --accent-blue: #92aaff;
+            --text-main: #ffffff;
+            --text-muted: #7e9488;
+            --line-color: rgba(146, 170, 255, 0.1);
+            --select-opt-bg: #010201;
+            --select-opt-color: #ffffff;
+        }
+
+        /* Styles pour le Mode Clair parfaitement intégrés */
+        body.light-mode {
+            --bg-gradient: linear-gradient(135deg, #f4f7f5 0%, #e8ebe9 100%);
+            --text-main: #0c1a12;
+            --text-muted: #5a6e63;
+            --line-color: rgba(0, 0, 0, 0.08);
+            --select-opt-bg: #ffffff;
+            --select-opt-color: #0c1a12;
+        }
+
+        body.light-mode::before, body.light-mode::after {
+            opacity: 0.03;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            padding: 24px 20px 100px 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body::before {
+            content: ""; position: fixed; top: -20%; right: -20%;
+            width: 400px; height: 400px; background: var(--glow-green);
+            opacity: 0.06; filter: blur(150px); z-index: -1; pointer-events: none;
+        }
+
+        body::after {
+            content: ""; position: fixed; bottom: -10%; left: -10%;
+            width: 350px; height: 350px; background: var(--accent-blue);
+            opacity: 0.05; filter: blur(130px); z-index: -1; pointer-events: none;
+        }
+
+        .back-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0 20px 0;
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(146, 170, 255, 0.3);
+            background: #060e0a;
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: 0; right: 0;
+            background: var(--glow-green);
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--select-opt-bg);
+        }
+
+        .avatar-badge svg {
+            width: 14px; height: 14px; stroke: #ffffff;
+        }
+
+        #fileInput { display: none; }
+
+        .clean-form { margin-top: 10px; }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .form-row label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .input-plain {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+            padding: 4px 0;
+        }
+
+        .input-plain::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        select.input-plain {
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        select.input-plain option {
+            background: var(--select-opt-bg);
+            color: var(--select-opt-color);
+        }
+
+        .action-container { margin-top: 40px; }
+
+        .btn-minimal {
+            width: 100%;
+            background: linear-gradient(90deg, var(--glow-green), #179e46);
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(29, 185, 84, 0.15);
+        }
+
+        .toast-popup {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: var(--select-opt-bg); color: var(--text-main); padding: 12px 26px; border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-size: 13px; font-weight: 600; z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--accent-blue);
+            text-align: center;
+        }
+        .toast-popup.show { transform: translateX(-50%) translateY(0); }
+            /* --- SUPPRIMER LE BLEU APK --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast-popup">Chargement...</div>
+
+    <a href="parametre.html" class="back-nav" id="lnkBack">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Retour</span>
+    </a>
+
+    <div class="avatar-container">
+        <div class="avatar-wrapper" id="avatarClickZone">
+            <img id="imgAvatar" class="avatar-img" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
+            <div class="avatar-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="clean-form">
+        <div class="form-row">
+            <label id="lblLabelName" for="txtName">Nom complet / Pseudo</label>
+            <input type="text" id="txtName" class="input-plain" placeholder="Ajouter un nom...">
+        </div>
+
+        <div class="form-row">
+            <label id="lblLabelBirth" for="txtBirthday">Date de naissance</label>
+            <input type="date" id="txtBirthday" class="input-plain">
+        </div>
+
+        <div class="form-row">
+            <label id="lblLabelGender" for="selGender">Genre / Sexe</label>
+            <select id="selGender" class="input-plain">
+                <option value="M" id="optM">Masculin</option>
+                <option value="F" id="optF">Féminin</option>
+                <option value="Other" id="optO">Autre</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="action-container">
+        <button class="btn-minimal" id="btnSave">Mettre à jour le profil</button>
+    </div>
+
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBm-P3nrCQxf5fcnWOeKdatJcXqy6P3oxo",
+            authDomain: "tyti-deaee.firebaseapp.com",
+            projectId: "tyti-deaee",
+            storageBucket: "tyti-deaee.firebasestorage.app",
+            messagingSenderId: "668655272910",
+            appId: "1:668655272910:web:296794f893e36784d2619f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
+
+        function applyGlobalTheme() {
+            const currentTheme = localStorage.getItem('tyti_theme') || 'dark';
+            if (currentTheme === 'light') {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
+        }
+        applyGlobalTheme();
+
+        const dict = {
+            fr: {
+                back: "Retour", lblName: "Nom complet / Pseudo", lblBirth: "Date de naissance", lblGender: "Genre / Sexe",
+                optM: "Masculin", optF: "Féminin", optO: "Autre", btn: "Mettre à jour le profil",
+                loading: "Récupération de vos informations...", success: "✅ Profil mis à jour !", err: "❌ Échec de la mise à jour.",
+                offlineErr: "⚠️ Impossible de mettre à jour le profil hors-ligne."
+            },
+            en: {
+                back: "Back", lblName: "Full Name / Nickname", lblBirth: "Date of Birth", lblGender: "Gender",
+                optM: "Male", optF: "Female", optO: "Other", btn: "Update Profile",
+                loading: "Fetching your information...", success: "✅ Profile updated!", err: "❌ Update failed.",
+                offlineErr: "⚠️ Cannot update profile while offline."
+            },
+            ja: {
+                back: "戻る", lblName: "氏名 / ニックネーム", lblBirth: "生年月日", lblGender: "性別",
+                optM: "男性", optF: "女性", optO: "その他", btn: "プロフィールを更新",
+                loading: "情報を取得中...", success: "✅ 更新完了！", err: "❌ 更新に失敗しました。",
+                offlineErr: "⚠️ オフライン中は更新できません。"
+            }
+        };
+
+        const lang = localStorage.getItem('tyti_lang') || 'fr';
+        const ui = dict[lang] || dict.fr;
+
+        function applyTranslations() {
+            document.getElementById('lnkBack').querySelector('span').innerText = ui.back;
+            document.getElementById('lblLabelName').innerText = ui.lblName;
+            document.getElementById('lblLabelBirth').innerText = ui.lblBirth;
+            document.getElementById('lblLabelGender').innerText = ui.lblGender;
+            document.getElementById('optM').innerText = ui.optM;
+            document.getElementById('optF').innerText = ui.optF;
+            document.getElementById('optO').innerText = ui.optO;
+            document.getElementById('btnSave').innerText = ui.btn;
+            document.getElementById('toast').innerText = ui.loading;
+        }
+        applyTranslations();
+
+        let currentUser = null;
+        let base64Avatar = "";
+
+        const toast = document.getElementById('toast');
+        const txtName = document.getElementById('txtName');
+        const txtBirthday = document.getElementById('txtBirthday');
+        const selGender = document.getElementById('selGender');
+        const imgAvatar = document.getElementById('imgAvatar');
+        const fileInput = document.getElementById('fileInput');
+        const avatarClickZone = document.getElementById('avatarClickZone');
+        const btnSave = document.getElementById('btnSave');
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        avatarClickZone.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const originalImg = new Image();
+                    originalImg.onload = () => {
+                        const maxSize = 200;
+                        let width = originalImg.width;
+                        let height = originalImg.height;
+
+                        if (width > height) {
+                            if (width > maxSize) {
+                                height *= maxSize / width;
+                                width = maxSize;
+                            }
+                        } else {
+                            if (height > maxSize) {
+                                width *= maxSize / height;
+                                height = maxSize;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(originalImg, 0, 0, width, height);
+
+                        base64Avatar = canvas.toDataURL('image/jpeg', 0.7);
+                        imgAvatar.src = base64Avatar;
+                    };
+                    originalImg.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // --- INTERCEPTION DU COMPTE ACTIF MULTI-COMPTE ---
+        let activeUid = localStorage.getItem('tyti_active_uid');
+
+        onAuthStateChanged(auth, async (user) => {
+            // Si la session par défaut ne correspond pas au compte sélectionné, on bascule
+            if (user && activeUid && user.uid !== activeUid) {
+                user = null;
+            }
+
+            if (user) {
+                currentUser = user;
+                activeUid = user.uid;
+                localStorage.setItem('tyti_active_uid', activeUid);
+                await loadUserProfile();
+            } else {
+                // Secours local si le compte secondaire actif est déjà défini
+                if (activeUid) {
+                    currentUser = { uid: activeUid };
+                    await loadUserProfile();
+                } else {
+                    window.location.replace("index.html");
+                }
+            }
+        });
+
+        async function loadUserProfile() {
+            try {
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.name) txtName.value = data.name;
+                    if (data.birthDate) txtBirthday.value = data.birthDate;
+                    if (data.gender) selGender.value = data.gender;
+                    if (data.avatar) {
+                        imgAvatar.src = data.avatar;
+                        base64Avatar = data.avatar;
+                    }
+                }
+            } catch (err) {
+                console.error("Erreur de chargement", err);
+            }
+        }
+
+        btnSave.addEventListener('click', async () => {
+            if (!currentUser) return;
+
+            // VÉRIFICATION HORS-LIGNE
+            if (!navigator.onLine) {
+                showToast(ui.offlineErr);
+                return;
+            }
+
+            btnSave.disabled = true;
+            btnSave.style.opacity = "0.6";
+
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    name: txtName.value.trim(),
+                    birthDate: txtBirthday.value,
+                    gender: selGender.value,
+                    avatar: base64Avatar
+                });
+                showToast(ui.success);
+
+                // Sauvegarde parallèle locale pour réactivité immédiate sans rechargement réseau
+                localStorage.setItem('user_prenom', txtName.value.trim());
+                localStorage.setItem('user_avatar', base64Avatar);
+
+                setTimeout(() => {
+                    window.location.href = "parametre.html";
+                }, 1300);
+
+            } catch (error) {
+                showToast(ui.err);
+                btnSave.disabled = false;
+                btnSave.style.opacity = "1";
+            }
+        });
+    </script>
+</body>
+</html>
